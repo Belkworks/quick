@@ -40,7 +40,7 @@ _.reduce({1, 2, 3}, function(s, v) return s+v end) -- 6
 
 **find**: `_.find(list, fn) -> value`  
 Executes `fn` on each element of `list`.  
-Returns as soon as `fn` returns a truthy value.  
+Returns the first value that passes `fn`.  
 `fn` receives the parameters `(value, key, list`)
 ```lua
 _.find({1, 2, 3}, function(v) return v > 2 end) -- 3
@@ -50,7 +50,46 @@ _.find({1, 2, 3}, function(v) return v > 2 end) -- 3
 Like **map**, but only keeps values that pass `fn`.  
 The original value, however, is unmodified.
 `fn` receives the parameters `(value, key, list`)  
-**NOTE**: *Does not yet support dictionaries!*
+**NOTE**: *Does not return original key!*
 ```lua
 _.filter({1, 2, 3}, function(v) return v > 1 end) -- {2, 3}
+```
+
+**findWhere**: `_.findWhere(list, object) -> value`  
+Returns the first object in `list` that matches all keys in `object`
+```lua
+_.findWhere({{a=1,b=4}, {a=2,b=5}, {a=3,b=6}}, {a=3}) -- {a=3,b=6}
+```
+
+**where**: `_.where(list, props) -> array`  
+Like **findWhere**, but returns *all* objects that match all keys in `object`
+```lua
+_.findWhere({{a=1,b=4}, {a=2,b=5}, {a=2,b=6}}, {a=2}) -- {{a=2,b=5}, {a=2,b=6}}
+```
+
+**reject**: `_.reject(list, fn) -> array`  
+Opposite of **filter**, returns values that don't pass `fn`.  
+`fn` receives the parameters `(value, key, list`)
+```lua
+_.reject({1, 2, 3}, function(v) return v > 1 end) -- {1}
+```
+
+**every**: `_.every(list, fn) -> boolean`  
+Returns `true` if every value in `list` passes `fn`.  
+`fn` receives the parameters `(value, key, list`)
+```lua
+_.every({1, 2, 3}, function(v) return v > 1 end) -- false
+```
+
+**some**: `_.some(list, fn) -> boolean`  
+Returns `true` if any value in `list` passes `fn`.  
+`fn` receives the parameters `(value, key, list`)
+```lua
+_.some({1, 2, 3}, function(v) return v > 1 end) -- true
+```
+
+**contains**: `_.contains(list, value) -> boolean`  
+Returns `true` if `list` contains `value`.
+```lua
+_.contains({1, 2, 3}, 2) -- true
 ```
