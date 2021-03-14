@@ -94,13 +94,12 @@ U = {
   reduce = function(List, Fn, State)
     assertTable(List, "reduce: expected Table for arg#1, got " .. tostring(type(List)))
     assertType(Fn, 'function', "reduce: expected Function for arg#2, got " .. tostring(type(Fn)))
-    if State == nil then
-      State = U.find(List, function()
-        return true
-      end)
-    end
     for I, V in pairs(List) do
-      State = Fn(State, V, I, List)
+      if State == nil and I == 1 then
+        State = V
+      else
+        State = Fn(State, V, I, List)
+      end
     end
     return State
   end,

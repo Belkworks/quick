@@ -49,11 +49,12 @@ U = {
 	reduce: (List, Fn, State) -> -- Reduces list to single value, state defaults to first value
 		assertTable List, "reduce: expected Table for arg#1, got #{type List}"
 		assertType Fn, 'function', "reduce: expected Function for arg#2, got #{type Fn}"
-		if State == nil
-			State = U.find List, -> true  -- Get the first value
-
+		
 		for I, V in pairs List
-			State = Fn State, V, I, List
+			State = if State == nil and I == 1 -- skip the first
+				V -- default to first value
+			else Fn State, V, I, List
+
 		State
 
 	find: (List, Fn) -> -- Returns first value that passes Fn
