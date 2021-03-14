@@ -19,7 +19,7 @@ Returns the `list` passed to it.
 _.each({1, 2, 3}, function(v) print(v) end) -- prints each number in {1, 2, 3}
 ```
 
-**map**: `_.map(list, fn)`  
+**map**: `_.map(list, fn) -> list`  
 Like **each**, but maps the results of `fn` into an identically-keyed list.  
 `fn` receives the parameters `(value, key, list)`
 ```lua
