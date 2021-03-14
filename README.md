@@ -62,7 +62,7 @@ _.findWhere({{a=1,b=4}, {a=2,b=5}, {a=3,b=6}}, {a=3}) -- {a=3,b=6}
 **where**: `_.where(list, props) -> array`  
 Like **findWhere**, but returns *all* objects that match all keys in `object`
 ```lua
-_.findWhere({{a=1,b=4}, {a=2,b=5}, {a=2,b=6}}, {a=2}) -- {{a=2,b=5}, {a=2,b=6}}
+_.where({{a=1,b=4}, {a=2,b=5}, {a=2,b=6}}, {a=2}) -- {{a=2,b=5}, {a=2,b=6}}
 ```
 
 **reject**: `_.reject(list, fn) -> array`  
