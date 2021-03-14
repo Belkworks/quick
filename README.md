@@ -15,7 +15,7 @@ _ = NEON:github('belkworks', 'quick')
 
 **each**: `_.each(list, fn) -> list`  
 Runs `fn` (yielding) on each element in `list`.  
-`fn` receives the parameters `(value, key, list)`
+`fn` receives the parameters `(value, key, list)`  
 Returns the `list` passed to it.
 ```lua
 _.each({1, 2, 3}, function(v) print(v) end) -- prints each number in {1, 2, 3}
