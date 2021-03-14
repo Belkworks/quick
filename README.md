@@ -1,6 +1,4 @@
 
-
-> Written with [StackEdit](https://stackedit.io/).
 # Quick
 *A moonscript port of underscore, containing utilities for functional programming.*
 
