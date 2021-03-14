@@ -44,7 +44,7 @@ U = {
 	map: (List, Fn) -> -- Returns list of Fn (element)
 		assertTable List, "map: expected Table for arg#1, got #{type List}"
 		assertType Fn, 'function', "map: expected Function for arg#2, got #{type Fn}"
-		[Fn V, I, List for I, V in pairs List]
+		{I, Fn V, I, List for I, V in pairs List}
 
 	reduce: (List, Fn, State) -> -- Reduces list to single value, state defaults to first value
 		assertTable List, "reduce: expected Table for arg#1, got #{type List}"

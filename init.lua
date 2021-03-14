@@ -85,13 +85,11 @@ U = {
   map = function(List, Fn)
     assertTable(List, "map: expected Table for arg#1, got " .. tostring(type(List)))
     assertType(Fn, 'function', "map: expected Function for arg#2, got " .. tostring(type(Fn)))
-    local _accum_0 = { }
-    local _len_0 = 1
+    local _tbl_0 = { }
     for I, V in pairs(List) do
-      _accum_0[_len_0] = Fn(V, I, List)
-      _len_0 = _len_0 + 1
+      _tbl_0[I] = Fn(V, I, List)
     end
-    return _accum_0
+    return _tbl_0
   end,
   reduce = function(List, Fn, State)
     assertTable(List, "reduce: expected Table for arg#1, got " .. tostring(type(List)))
