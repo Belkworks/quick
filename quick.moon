@@ -226,7 +226,21 @@ U = {
 			if fn = old Wrap, FnName
 				(...) -> return U.chain fn ...
 			else error 'failed to find ' .. FnName
-	
+
+	times: (N, Fn) ->
+		assertType N, 'number', "times: expected number for arg#1, got #{type N}"
+		assertType Fn, 'function', "times: expected function for arg#2, got #{type Fn}"	
+		
+		[Fn i for i = 1, N]
+
+	result: (Object, Key, Default) ->
+		assertType Object, 'table', "result: expected Table for arg#1, got #{type Object}"
+		assert Key != nil, 'result: expected key for arg#2, got nil'
+
+		X = Object[Key]
+		return X if X != nil
+
+		Default
 }		
 
 if game

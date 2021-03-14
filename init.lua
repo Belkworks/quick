@@ -370,6 +370,26 @@ U = {
         end
       end
     })
+  end,
+  times = function(N, Fn)
+    assertType(N, 'number', "times: expected number for arg#1, got " .. tostring(type(N)))
+    assertType(Fn, 'function', "times: expected function for arg#2, got " .. tostring(type(Fn)))
+    local _accum_0 = { }
+    local _len_0 = 1
+    for i = 1, N do
+      _accum_0[_len_0] = Fn(i)
+      _len_0 = _len_0 + 1
+    end
+    return _accum_0
+  end,
+  result = function(Object, Key, Default)
+    assertType(Object, 'table', "result: expected Table for arg#1, got " .. tostring(type(Object)))
+    assert(Key ~= nil, 'result: expected key for arg#2, got nil')
+    local X = Object[Key]
+    if X ~= nil then
+      return X
+    end
+    return Default
   end
 }
 if game then
