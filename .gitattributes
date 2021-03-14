@@ -1,0 +1,2 @@
+# ignore lua
+*.lua linguist-detectable=false
