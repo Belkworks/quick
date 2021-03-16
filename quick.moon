@@ -242,6 +242,19 @@ U = {
 		return X if X != nil
 
 		Default
+
+	curry: (N, Fn, args = {}) ->
+		assertType N, 'number', "curry: expected number for arg#1, got #{type N}"
+		assertType Fn, 'function', "curry: expected function for arg#2, got #{type Fn}"	
+		(v) ->
+			a = [v for v in *args]
+			n = N - 1
+			if n <= 0
+				Fn unpack(a), v
+			else
+				table.insert a, v
+				curry n, Fn, a
+
 }		
 
 if game

@@ -389,6 +389,33 @@ U = {
       return X
     end
     return Default
+  end,
+  curry = function(N, Fn, args)
+    if args == nil then
+      args = { }
+    end
+    assertType(N, 'number', "curry: expected number for arg#1, got " .. tostring(type(N)))
+    assertType(Fn, 'function', "curry: expected function for arg#2, got " .. tostring(type(Fn)))
+    return function(v)
+      local a
+      do
+        local _accum_0 = { }
+        local _len_0 = 1
+        for _index_0 = 1, #args do
+          local v = args[_index_0]
+          _accum_0[_len_0] = v
+          _len_0 = _len_0 + 1
+        end
+        a = _accum_0
+      end
+      local n = N - 1
+      if n <= 0 then
+        return Fn(unpack(a), v)
+      else
+        table.insert(a, v)
+        return curry(n, Fn, a)
+      end
+    end
   end
 }
 if game then
