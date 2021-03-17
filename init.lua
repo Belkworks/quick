@@ -318,7 +318,7 @@ U = {
   end,
   capFirst = function(S)
     assertType(S, 'string', "capFirst: expected string for arg#1, got " .. tostring(type(S)))
-    return S:sub(1, 1):upper() .. S:sub(2):lower()
+    return S:sub(1, 1):upper() .. S:sub(2)
   end,
   stringify = function(A)
     local _exp_0 = type(A)

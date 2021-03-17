@@ -193,7 +193,7 @@ U = {
 
 	capFirst: (S) ->
 		assertType S, 'string', "capFirst: expected string for arg#1, got #{type S}"
-		S\sub(1,1)\upper! .. S\sub(2)\lower!
+		S\sub(1,1)\upper! .. S\sub 2
 
 	stringify: (A) ->
 		switch type A
