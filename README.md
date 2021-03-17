@@ -26,7 +26,7 @@ Like **each**, but maps the results of `fn` into an identically-keyed list.
 _.map({1, 2, 3}, function(v) return v*2 end) -- {2, 4, 6}
 ```
 
-**reduce**: `_.reduce(list, fn, state) -> value`  
+**reduce**: `_.reduce(list, fn, state) -> value?`  
 Like **map**, but returns the last result of `fn`.  
 Whatever `fn` returns is the new state in each call.  
 If `state` is undefined, `fn` is not called for the first iteration.  
@@ -36,7 +36,7 @@ If `state` is undefined, `fn` is not called for the first iteration.
 _.reduce({1, 2, 3}, function(s, v) return s+v end) -- 6
 ```
 
-**find**: `_.find(list, fn) -> value`  
+**find**: `_.find(list, fn) -> value?`  
 Executes `fn` on each element of `list`.  
 Returns the first value that passes `fn`.  
 `fn` receives the parameters `(value, key, list)`
@@ -53,7 +53,7 @@ The original value, however, is unmodified.
 _.filter({1, 2, 3}, function(v) return v > 1 end) -- {2, 3}
 ```
 
-**findWhere**: `_.findWhere(list, object) -> value`  
+**findWhere**: `_.findWhere(list, object) -> value?`  
 Returns the first object in `list` that matches all keys in `object`
 ```lua
 _.findWhere({{a=1,b=4}, {a=2,b=5}, {a=3,b=6}}, {a=3}) -- {a=3,b=6}
@@ -85,9 +85,146 @@ Returns `true` if any value in `list` passes `fn`.
 ```lua
 _.some({1, 2, 3}, function(v) return v > 1 end) -- true
 ```
-
+**indexOf**: `_.indexOf(list, value) -> integer?`  
+Returns the first index of `value` in `list`.  
+Returns `nil` if `value` wasn't found.
+```lua
+_.indexOf({3, 2, 1}, 3) -- 1
+```
 **contains**: `_.contains(list, value) -> boolean`  
 Returns `true` if `list` contains `value`.
 ```lua
 _.contains({1, 2, 3}, 2) -- true
 ```
+**partition**: `_.partition(list, fn) -> array, array`  
+Like **filter**, but the second returned array contains values that didn't pass `fn`.
+```lua
+_.filter({1, 2, 3}, function(v) return v > 1 end) -- {2, 3}, {1}
+```
+**first**: `_.first(list, N = 1) -> array`  
+Returns the first `N` values of `list` as an array.
+```lua
+_.first({1, 2, 3}, 1) -- {1}
+_.first({1, 2, 3}, 2) -- {1, 2}
+```
+**defaults**: `_.defaults(object, props) -> object`  
+Fill in missing properties in `object` from `props`.  
+Does not work recursively.  
+Returns the modified `object`.
+```lua
+_.defaults({a=1}, {a=2,b=3}) -- {a=1, b=3}
+```
+**keys**: `_.keys(list) -> array`  
+Returns an array of keys for the given `list`.
+```lua
+_.keys({a=1, b=3}) -- {'a', 'b'}
+```
+**result**: `_.result(list, key, default) -> value`  
+Returns `list[key]` if it is non-nil or returns `default`
+```lua
+_.result({a=1, b=3}, 'b', 4) -- 3
+_.result({a=1, b=3}, 'c', 4) -- 4
+```
+### Arrays
+**shuffle**: `_.shuffle(array) -> array`  
+Returns a shuffled copy of the input `array`.
+```lua
+_.shuffle({1,2,3}) -- {3, 1, 2}
+```
+**reverse**: `_.reverse(array) -> array`  
+Returns a reversed copy of the input `array`.
+```lua
+_.reverse({1,2,3}) -- {3, 2, 1}
+```
+**sample**: `_.sample(array, N = 1) -> array`  
+Returns N elements randomly chosen from `array`.
+```lua
+_.sample({1,2,3}) -- {2}
+_.sample({1,2,3}, 2) -- {3, 1}
+```
+**compact**: `_.compact(array) -> array`  
+Returns a copy of `array` with falsy values filtered out.
+```lua
+_.compact({1, nil, 2, false, 3}) -- {1, 2, 3}
+```
+**join**: `_.join(array, sep = '') -> string`  
+Shorthand for `table.concat(array, sep)`
+```lua
+_.join({1, 2, 3}) -- '123'
+_.join({1, 2, 3}, ' ') -- '1 2 3'
+_.join({1, 2, 3}, ', ') -- '1, 2, 3'
+```
+### Strings
+**plural**: `_.plural(str, num) -> string`  
+Returns `str` with an appended `s` if `num` is not 1.
+```lua
+_.plural('piece', 2) -- 'pieces'
+_.plural('piece', 1) -- 'piece'
+_.plural('piece', 0) -- 'pieces'
+```
+**capFirst**: `_.capFirst(str) -> string`  
+Returns `str` but with the first letter capitalized.
+```lua
+_.capFirst('apple') -- 'Apple'
+```
+**stringify**: `_.stringify(value) -> string`  
+Turns any value into a readable string.
+```lua
+_.stringify('apple') -- '"apple"'
+_.stringify({1,2,3}) -- '[1, 2, 3]'
+_.stringify({a=1, b=2}) -- '{"a": 1, "b": 2}'
+```
+### Math
+**rr**: `_.rr(value, min, max, change = 0) -> number`  
+Round-robin `value + change` to be within `min` and `max` (inclusive).  
+Returns the bounded number.
+```lua
+_.rr(2, 1, 10) -- 2
+_.rr(1, 1, 10) -- 1
+_.rr(10, 1, 10) -- 10
+_.rr(11, 1, 10) -- 1
+_.rr(10, 1, 10, 1) -- 1
+_.rr(8, 1, 10, 3) -- 1
+```
+
+### Utilities
+**times**: `_.times(num, fn) -> array`  
+Calls `fn` `num` times, with the current execution passed to `fn` as its only parameter.  
+Returns the results of those calls as an array.
+```lua
+_.times(3, function(i) return i*2 end) -- {2, 4, 6}
+```
+**curry**: `_.curry(num, fn, args = {}) -> function`  
+Returns a [curried](https://drboolean.gitbooks.io/mostly-adequate-guide-old/content/ch4.html) version of `fn` that will receive `num` args.
+```lua
+plural = _.curry(2, _.plural)
+pieces = plural('pieces')
+pieces(2) -- 'pieces'
+pieces(1) -- 'piece'
+pieces(0) -- 'pieces'
+```
+**chain**: `_.chain(value) -> object`  
+Allows fluent method chaining on a value.  
+Each subsequent call is wrapped in a new `chain`.  
+Use the `.value()` function to get the value from a chain.
+```lua
+list = _.chain({1, 2, 3})
+reversed = list.reverse()
+doubled = reversed.map(function(v) return v*2 end)
+doubledReversed = doubled.value() -- {6, 4, 2}
+
+-- you don't need to assign the result to a variable
+double = function(v) return v*2 end
+doubledReversed = _.chain({1, 2, 3}).reverse().map(double).value() -- {6, 4, 2}
+```
+
+### OOP Style
+You can wrap a value with quick functions by calling `_(value)`.  
+The wrapped value will be passed as the first argument for you.  
+This is used internally by `_.chain`.
+```lua
+wrapped = _({1, 2, 3})
+reversed = wrapped.reverse() -- {3, 2, 1}
+-- reverse receives the wrapped value
+```
+
