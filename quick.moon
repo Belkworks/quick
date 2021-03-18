@@ -277,12 +277,12 @@ U = {
 		deb = U.debounce state
 		(set) -> not deb set
 
-	-- rising(state = false) -> (set) -> bool
-	falling: (state = false) ->
+	-- rising(state = true) -> (set) -> bool
+	falling: (state = true) ->
 		assertType state, 'boolean',
 			"falling: expected boolean for arg#1, got #{type state}"
 
-		deb = U.debounce state
+		deb = U.debounce not state
 		(set) -> not deb not set
 
 }

@@ -448,10 +448,10 @@ U = {
   end,
   falling = function(state)
     if state == nil then
-      state = false
+      state = true
     end
     assertType(state, 'boolean', "falling: expected boolean for arg#1, got " .. tostring(type(state)))
-    local deb = U.debounce(state)
+    local deb = U.debounce(not state)
     return function(set)
       return not deb(not set)
     end
