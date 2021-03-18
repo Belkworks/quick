@@ -285,8 +285,8 @@ Uses `_.debounce` internally.
 down = _.falling()
 down(false) -- true
 down(true) -- false
-down(true) -- false
 down(false) -- true
+down(false) -- false
 down(true) -- false
 ```
 
@@ -300,4 +300,3 @@ wrapped = _({1, 2, 3})
 reversed = wrapped.reverse() -- {3, 2, 1}
 -- reverse receives the wrapped value
 ```
-
