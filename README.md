@@ -240,6 +240,56 @@ double = function(v) return v*2 end
 doubledReversed = _.chain({1, 2, 3}).reverse().map(double).value() -- {6, 4, 2}
 ```
 
+**debounce**: `_.debounce(state = false) -> (new = true) -> boolean`  
+Create a debouncer with a predetermined `state`.  
+Returns a function that takes a parameter, `new`, which will set the internal state.  
+Call the debounce with `false` to clear the state.  
+Otherwise, a truthy value will set the state.
+Returns `true` if the debouncer was already set.
+```lua
+deb = _.debounce()
+deb() -- false
+deb() -- true
+deb() -- true
+deb(false) -- true, unsets debounce
+deb() -- false
+
+-- example
+deb = _.debounce()
+function doSomething()
+    if deb() then return end -- debounce is now enabled
+    -- do some work
+    deb(false) -- unset the debounce
+end
+doSomething()
+```
+
+**rising**: `_.rising(state = false) -> (set) -> boolean`  
+A rising edge detector.  
+Returns a function that takes an input, `set`, and outputs whether it is the first rising value.  
+Uses `_.debounce` internally.
+```lua
+up = _.rising()
+up(false) -- false
+up(true) -- true
+up(true) -- false
+up(false) -- false
+up(true) -- true
+```
+
+**falling**: `_.falling(state = true) -> (set) -> boolean`  
+A Falling edge detector.  
+Returns a function that takes an input, `set`, and outputs whether it is the first falling value.  
+Uses `_.debounce` internally.
+```lua
+down = _.falling()
+down(false) -- true
+down(true) -- false
+down(true) -- false
+down(false) -- true
+down(true) -- false
+```
+
 ### OOP Style
 
 You can wrap a value with quick functions by calling `_(value)`.  
