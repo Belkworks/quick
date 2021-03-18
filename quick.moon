@@ -269,6 +269,22 @@ U = {
 
 			not state
 
+	-- rising(state = false) -> (set) -> bool
+	rising: (state = false) ->
+		assertType state, 'boolean',
+			"rising: expected boolean for arg#1, got #{type state}"
+
+		deb = U.debounce state
+		(set) -> not deb set
+
+	-- rising(state = false) -> (set) -> bool
+	falling: (state = false) ->
+		assertType state, 'boolean',
+			"falling: expected boolean for arg#1, got #{type state}"
+
+		deb = U.debounce state
+		(set) -> not deb not set
+
 }
 
 if game

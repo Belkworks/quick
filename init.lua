@@ -435,6 +435,26 @@ U = {
       end
       return not state
     end
+  end,
+  rising = function(state)
+    if state == nil then
+      state = false
+    end
+    assertType(state, 'boolean', "rising: expected boolean for arg#1, got " .. tostring(type(state)))
+    local deb = U.debounce(state)
+    return function(set)
+      return not deb(set)
+    end
+  end,
+  falling = function(state)
+    if state == nil then
+      state = false
+    end
+    assertType(state, 'boolean', "falling: expected boolean for arg#1, got " .. tostring(type(state)))
+    local deb = U.debounce(state)
+    return function(set)
+      return not deb(not set)
+    end
   end
 }
 if game then
