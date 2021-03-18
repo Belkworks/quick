@@ -255,7 +255,21 @@ U = {
 				table.insert a, v
 				curry n, Fn, a
 
-}		
+	-- debounce(state = false) -> (set = true) -> bool
+	debounce: (state = false) ->
+		assertType state, 'boolean',
+			"debounce: expected boolean for arg#1, got #{type state}"
+
+		(set = true) ->
+			if set == false
+				state = false
+			elseif state
+				return true
+			else state = true
+
+			not state
+
+}
 
 if game
 	with U

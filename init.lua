@@ -416,6 +416,25 @@ U = {
         return curry(n, Fn, a)
       end
     end
+  end,
+  debounce = function(state)
+    if state == nil then
+      state = false
+    end
+    assertType(state, 'boolean', "debounce: expected boolean for arg#1, got " .. tostring(type(state)))
+    return function(set)
+      if set == nil then
+        set = true
+      end
+      if set == false then
+        state = false
+      elseif state then
+        return true
+      else
+        state = true
+      end
+      return not state
+    end
   end
 }
 if game then
