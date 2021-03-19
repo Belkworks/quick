@@ -6,7 +6,6 @@ assertTable = (Value, Error) -> assertType Value, 'table', Error
 
 U = {}
 U = {
-
 	-- Utility
 	ab: (Choice, A, B) -> Choice and A or B
 
@@ -83,7 +82,7 @@ U = {
 		assertTable Props, "where: expected Object for arg#2, got #{type Props}"
 		assert U.isArray(List), "where: expected Array for arg#1, got Object"
 		assert U.isObject(Props), "where: expected Object for arg#2, got Array"
-		U.filter List, (O) -> return false for I, V in pairs Props when O[I] ~= V
+		U.filter List, (O) -> U.matchKeys O, Props
 
 	reject: (List, Fn) -> -- Opposite of filter, returns failed Fn
 		assertTable List, "reject: expected Table for arg#1, got #{type List}"

@@ -148,11 +148,7 @@ U = {
     assert(U.isArray(List), "where: expected Array for arg#1, got Object")
     assert(U.isObject(Props), "where: expected Object for arg#2, got Array")
     return U.filter(List, function(O)
-      for I, V in pairs(Props) do
-        if O[I] ~= V then
-          return false
-        end
-      end
+      return U.matchKeys(O, Props)
     end)
   end,
   reject = function(List, Fn)
