@@ -8,8 +8,30 @@ assertTable = function(Value, Error)
 end
 local U = { }
 U = {
+  noop = function() end,
   ab = function(Choice, A, B)
     return Choice and A or B
+  end,
+  identity = function(Value)
+    return Value
+  end,
+  constant = function(Value)
+    return function()
+      return Value
+    end
+  end,
+  iteratee = function(Value)
+    local _exp_0 = type(Value)
+    if 'nil' == _exp_0 then
+      return U.identity
+    elseif 'table' == _exp_0 then
+      if U.isObject(Value) then
+        return U.matcher(Value)
+      end
+    elseif 'function' == _exp_0 then
+      return Value
+    end
+    return U.property(Value)
   end,
   isArray = function(List)
     if not ('table' == type(List)) then
@@ -30,6 +52,40 @@ U = {
       return false
     end
     return not U.isArray(List)
+  end,
+  isMatch = function(Object, Props)
+    assertTable(Object, "matchKeys: expected Object for arg#1, got " .. tostring(type(Object)))
+    assertTable(Props, "matchKeys: expected Object for arg#2, got " .. tostring(type(Props)))
+    for I, V in pairs(Props) do
+      if Object[I] ~= V then
+        return false
+      end
+    end
+    return true
+  end,
+  matcher = function(Props)
+    return function(Object)
+      return U.isMatch(Object, Props)
+    end
+  end,
+  toPath = function(Path)
+    if U.isArray(Path) then
+      return Path
+    else
+      return {
+        Path
+      }
+    end
+  end,
+  property = function(Path)
+    Path = U.toPath(Path)
+    return function(Object)
+      for _index_0 = 1, #Path do
+        local v = Path[_index_0]
+        Object = Object[v]
+      end
+      return Object
+    end
   end,
   values = function(List)
     assertTable(List, "values: expected Table for arg#1, got " .. tostring(type(List)))
@@ -125,21 +181,11 @@ U = {
     end
     return _accum_0
   end,
-  matchKeys = function(Object, Props)
-    assertTable(List, "matchKeys: expected Object for arg#1, got " .. tostring(type(Object)))
-    assertTable(Props, "matchKeys: expected Object for arg#2, got " .. tostring(type(Props)))
-    for I, V in pairs(Props) do
-      if O[I] ~= V then
-        return false
-      end
-    end
-    return true
-  end,
   findWhere = function(List, Props)
     assertTable(List, "findWhere: expected Array for arg#1, got " .. tostring(type(List)))
     assertTable(Props, "findWhere: expected Object for arg#2, got " .. tostring(type(Props)))
     return U.find(List, function(O)
-      return U.matchKeys(O, Props)
+      return U.isMatch(O, Props)
     end)
   end,
   where = function(List, Props)
@@ -148,7 +194,7 @@ U = {
     assert(U.isArray(List), "where: expected Array for arg#1, got Object")
     assert(U.isObject(Props), "where: expected Object for arg#2, got Array")
     return U.filter(List, function(O)
-      return U.matchKeys(O, Props)
+      return U.isMatch(O, Props)
     end)
   end,
   reject = function(List, Fn)

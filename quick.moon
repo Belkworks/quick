@@ -7,7 +7,21 @@ assertTable = (Value, Error) -> assertType Value, 'table', Error
 U = {}
 U = {
 	-- Utility
+	noop: ->
 	ab: (Choice, A, B) -> Choice and A or B
+	identity: (Value) -> Value
+	constant: (Value) -> -> Value
+	iteratee: (Value) ->
+		switch type Value
+			when 'nil'
+				return U.identity
+			when 'table'
+				if U.isObject Value
+					return U.matcher Value
+			when 'function'
+				return Value
+
+		return U.property Value
 
 	isArray: (List) ->
 		return false unless 'table' == type List
@@ -16,6 +30,27 @@ U = {
 	isObject: (List) ->
 		return false unless 'table' == type List
 		not U.isArray List
+
+	isMatch: (Object, Props) -> -- Returns true if Object matches Props
+		assertTable Object, "matchKeys: expected Object for arg#1, got #{type Object}"
+		assertTable Props, "matchKeys: expected Object for arg#2, got #{type Props}"
+		return false for I, V in pairs Props when Object[I] ~= V
+		true
+
+	matcher: (Props) -> -- Returns a predicate that tests Object against Props
+		(Object) -> U.isMatch Object, Props
+
+	toPath: (Path) ->
+		if U.isArray Path
+			Path
+		else { Path }
+
+	property: (Path) ->
+		Path = U.toPath Path
+
+		(Object) ->
+			Object = Object[v] for v in *Path
+			Object
 
 	values: (List) ->
 		assertTable List, "values: expected Table for arg#1, got #{type List}"
@@ -66,23 +101,17 @@ U = {
 		assertType Fn, 'function', "filter: expected Function for arg#2, got #{type Fn}"
 		[V for I, V in pairs List when Fn V, I, List]
 
-	matchKeys: (Object, Props) -> -- Returns true if Object matches Props
-		assertTable List, "matchKeys: expected Object for arg#1, got #{type Object}"
-		assertTable Props, "matchKeys: expected Object for arg#2, got #{type Props}"
-		return false for I, V in pairs Props when O[I] ~= V
-		true
-
 	findWhere: (List, Props) -> -- Returns first object matching properties
 		assertTable List, "findWhere: expected Array for arg#1, got #{type List}"
 		assertTable Props, "findWhere: expected Object for arg#2, got #{type Props}"
-		U.find List, (O) -> U.matchKeys O, Props
+		U.find List, (O) -> U.isMatch O, Props
 
 	where: (List, Props) -> -- Returns all objects matching properties
 		assertTable List, "where: expected Array for arg#1, got #{type List}"
 		assertTable Props, "where: expected Object for arg#2, got #{type Props}"
 		assert U.isArray(List), "where: expected Array for arg#1, got Object"
 		assert U.isObject(Props), "where: expected Object for arg#2, got Array"
-		U.filter List, (O) -> U.matchKeys O, Props
+		U.filter List, (O) -> U.isMatch O, Props
 
 	reject: (List, Fn) -> -- Opposite of filter, returns failed Fn
 		assertTable List, "reject: expected Table for arg#1, got #{type List}"
