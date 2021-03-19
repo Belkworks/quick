@@ -67,12 +67,16 @@ U = {
 		assertType Fn, 'function', "filter: expected Function for arg#2, got #{type Fn}"
 		[V for I, V in pairs List when Fn V, I, List]
 
+	matchKeys: (Object, Props) -> -- Returns true if Object matches Props
+		assertTable List, "matchKeys: expected Object for arg#1, got #{type Object}"
+		assertTable Props, "matchKeys: expected Object for arg#2, got #{type Props}"
+		return false for I, V in pairs Props when O[I] ~= V
+		true
+
 	findWhere: (List, Props) -> -- Returns first object matching properties
 		assertTable List, "findWhere: expected Array for arg#1, got #{type List}"
 		assertTable Props, "findWhere: expected Object for arg#2, got #{type Props}"
-		assert U.isArray(List), "findWhere: expected Array for arg#1, got Object"
-		assert U.isObject(Props), "findWhere: expected Object for arg#2, got Array"
-		U.find List, (O) -> return false for I, V in pairs Props when O[I] ~= V
+		U.find List, (O) -> U.matchKeys O, Props
 
 	where: (List, Props) -> -- Returns all objects matching properties
 		assertTable List, "where: expected Array for arg#1, got #{type List}"
@@ -95,8 +99,12 @@ U = {
 	some: (List, Fn) -> -- Returns true if some elements pass Fn
 		assertTable List, "some: expected Table for arg#1, got #{type List}"
 		assertType Fn, 'function', "some: expected Function for arg#2, got #{type Fn}"
-		return true for I, V in pairs List when Fn V, I, List
-		false
+		nil != U.find List, Fn
+
+	none: (List, Fn) -> -- Returns true if no elements pass Fn
+		assertTable List, "none: expected Table for arg#1, got #{type List}"
+		assertType Fn, 'function', "none: expected Function for arg#2, got #{type Fn}"
+		return not U.some List, Fn
 
 	indexOf: (List, Element) -> -- Returns index of Element in List
 		assertTable List, "indexOf: expected Table for arg#1, got #{type List}"
@@ -133,6 +141,7 @@ U = {
 
 		List = U.softCopy U.values List
 		table.sort List, Fn
+
 		List
 
 	reverse: (List) -> -- Returns a backwards copy
@@ -160,6 +169,7 @@ U = {
 			if Fn V, I, List
 				table.insert Pass, V
 			else table.insert Fail, V
+
 		Pass, Fail
 
 	compact: (List) -> -- Filter out falsy values
@@ -231,7 +241,6 @@ U = {
 	times: (N, Fn) ->
 		assertType N, 'number', "times: expected number for arg#1, got #{type N}"
 		assertType Fn, 'function', "times: expected function for arg#2, got #{type Fn}"	
-		
 		[Fn i for i = 1, N]
 
 	result: (Object, Key, Default) ->

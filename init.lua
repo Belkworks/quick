@@ -125,17 +125,21 @@ U = {
     end
     return _accum_0
   end,
+  matchKeys = function(Object, Props)
+    assertTable(List, "matchKeys: expected Object for arg#1, got " .. tostring(type(Object)))
+    assertTable(Props, "matchKeys: expected Object for arg#2, got " .. tostring(type(Props)))
+    for I, V in pairs(Props) do
+      if O[I] ~= V then
+        return false
+      end
+    end
+    return true
+  end,
   findWhere = function(List, Props)
     assertTable(List, "findWhere: expected Array for arg#1, got " .. tostring(type(List)))
     assertTable(Props, "findWhere: expected Object for arg#2, got " .. tostring(type(Props)))
-    assert(U.isArray(List), "findWhere: expected Array for arg#1, got Object")
-    assert(U.isObject(Props), "findWhere: expected Object for arg#2, got Array")
     return U.find(List, function(O)
-      for I, V in pairs(Props) do
-        if O[I] ~= V then
-          return false
-        end
-      end
+      return U.matchKeys(O, Props)
     end)
   end,
   where = function(List, Props)
@@ -177,12 +181,12 @@ U = {
   some = function(List, Fn)
     assertTable(List, "some: expected Table for arg#1, got " .. tostring(type(List)))
     assertType(Fn, 'function', "some: expected Function for arg#2, got " .. tostring(type(Fn)))
-    for I, V in pairs(List) do
-      if Fn(V, I, List) then
-        return true
-      end
-    end
-    return false
+    return nil ~= U.find(List, Fn)
+  end,
+  none = function(List, Fn)
+    assertTable(List, "none: expected Table for arg#1, got " .. tostring(type(List)))
+    assertType(Fn, 'function', "none: expected Function for arg#2, got " .. tostring(type(Fn)))
+    return not U.some(List, Fn)
   end,
   indexOf = function(List, Element)
     assertTable(List, "indexOf: expected Table for arg#1, got " .. tostring(type(List)))
