@@ -151,6 +151,14 @@ U = {
       end
     end
   end,
+  findIndex = function(List, Fn)
+    Fn = U.iteratee(Fn)
+    for I, V in pairs(List) do
+      if Fn(V, I, List) then
+        return I
+      end
+    end
+  end,
   filter = function(List, Fn)
     Fn = U.iteratee(Fn)
     local _accum_0 = { }

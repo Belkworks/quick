@@ -83,6 +83,10 @@ U = {
 		Fn = U.iteratee Fn
 		return V for I, V in pairs List when Fn V, I, List
 
+	findIndex: (List, Fn) -> -- Returns first index that passes Fn
+		Fn = U.iteratee Fn
+		return I for I, V in pairs List when Fn V, I, List
+
 	filter: (List, Fn) -> -- Returns each value that passes Fn
 		Fn = U.iteratee Fn
 		[V for I, V in pairs List when Fn V, I, List]
@@ -119,8 +123,7 @@ U = {
 		U.map List, (V) -> V[Method] unpack Args
 
 	pluck: (List, Key) -> -- Returns list of each value[key]
-		U.map List, (V, I) ->
-			V[Key]
+		U.map List, (V, I) -> V[Key]
 
 	shuffle: (List) -> -- Returns shuffled copy
 		List = U.softCopy U.values List
@@ -141,7 +144,6 @@ U = {
 		
 		Result = {}
 		while #List > 0
-
 			table.insert Result, table.remove List
 		
 		Result
