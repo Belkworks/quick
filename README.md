@@ -7,6 +7,9 @@
 _ = NEON:github('belkworks', 'quick')
 ```
 
+**NOTE**: This is the *assertion* branch.  
+Incorrect types will throw an error.
+
 ## API
 
 ### Collections
