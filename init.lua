@@ -585,6 +585,46 @@ U = {
     return function(set)
       return not deb(not set)
     end
+  end,
+  stack = function(state)
+    if state == nil then
+      state = { }
+    end
+    enforce('stack', 'table', state)
+    return {
+      isEmpty = function()
+        return #state == 0
+      end,
+      push = function(v)
+        return table.insert(state, v)
+      end,
+      pop = function()
+        return table.remove(state)
+      end,
+      peek = function()
+        return state[#state]
+      end
+    }
+  end,
+  queue = function(state)
+    if state == nil then
+      state = { }
+    end
+    enforce('queue', 'table', state)
+    return {
+      isEmpty = function()
+        return #state == 0
+      end,
+      push = function(v)
+        return table.insert(state, v)
+      end,
+      next = function()
+        return table.remove(state, 1)
+      end,
+      peek = function()
+        return state[1]
+      end
+    }
   end
 }
 if game then
