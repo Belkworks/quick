@@ -512,7 +512,7 @@ U = {
     if args == nil then
       args = { }
     end
-    enforce('result', {
+    enforce('curry', {
       'number',
       'function'
     }, N, Fn)
@@ -538,6 +538,7 @@ U = {
     end
   end,
   uncurry = function(Fn)
+    enforce('uncurry', 'function', Fn)
     return function(...)
       return U.reduce({
         ...
