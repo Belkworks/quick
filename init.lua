@@ -592,11 +592,13 @@ U = {
     end
     enforce('stack', 'table', state)
     return {
+      state = state,
       isEmpty = function()
         return #state == 0
       end,
       push = function(v)
-        return table.insert(state, v)
+        table.insert(state, v)
+        return #v
       end,
       pop = function()
         return table.remove(state)
@@ -612,11 +614,13 @@ U = {
     end
     enforce('queue', 'table', state)
     return {
+      state = state,
       isEmpty = function()
         return #state == 0
       end,
       push = function(v)
-        return table.insert(state, v)
+        table.insert(state, v)
+        return #v
       end,
       next = function()
         return table.remove(state, 1)

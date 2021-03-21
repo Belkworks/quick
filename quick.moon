@@ -334,8 +334,11 @@ U = {
 	stack: (state = {}) ->
 		enforce 'stack', 'table', state
 		{
+			:state
 			isEmpty: -> #state == 0
-			push: (v) -> table.insert state, v
+			push: (v) ->
+				table.insert state, v
+				#v
 			pop: -> table.remove state
 			peek: -> state[#state]
 		}
@@ -343,8 +346,11 @@ U = {
 	queue: (state = {}) ->
 		enforce 'queue', 'table', state
 		{
+			:state
 			isEmpty: -> #state == 0
-			push: (v) -> table.insert state, v
+			push: (v) ->
+				table.insert state, v
+				#v
 			next: -> table.remove state, 1
 			peek: -> state[1]
 		}
