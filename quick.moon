@@ -202,6 +202,14 @@ U = {
 				'"' .. A .. '\"'
 			else tostring A
 	
+	phone: (S) ->
+		Substitutions = {
+			S\upper!, 'ABC', 'DEF',
+			'GHI', 'JKL', 'MNO',
+			'PQRS', 'TUV','WXYZ'
+		}
+		U.reduce Substitutions, (S, V, I) -> S\gsub '['..V..']', tostring I
+
 	-- Math
 	rr: (val, min, max, change = 0) -> min + (val-min+change)%(max-min+1) -- round robin
 

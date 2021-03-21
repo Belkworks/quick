@@ -335,6 +335,22 @@ U = {
       return tostring(A)
     end
   end,
+  phone = function(S)
+    local Substitutions = {
+      S:upper(),
+      'ABC',
+      'DEF',
+      'GHI',
+      'JKL',
+      'MNO',
+      'PQRS',
+      'TUV',
+      'WXYZ'
+    }
+    return U.reduce(Substitutions, function(S, V, I)
+      return S:gsub('[' .. V .. ']', tostring(I))
+    end)
+  end,
   rr = function(val, min, max, change)
     if change == nil then
       change = 0
