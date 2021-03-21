@@ -212,18 +212,20 @@ U = {
 		U.filter List, (V) -> V
 
 	first: (List, N = 1) -> -- Get first N of List 
+		assertTable List, "first: expected Table for arg#1, got #{type List}"
+		assertType N, 'number', "first: expected number for arg#2, got #{type N}"
 		[V for I, V in pairs List when I <= N]
 
 	join: (List, Sep = '') -> -- Concat a table
-		assertTable List, "join: expected Table for arg#1, got #{type Object}"
+		assertTable List, "join: expected Table for arg#1, got #{type List}"
 		assertType Sep, 'string', "join: expected string for arg#1, got #{type S}"
 		table.concat List, Sep
 
 	-- Objects
-	defaults: (Object, Properties) ->
+	defaults: (Object, Props) ->
 		assertTable Object, "defaults: expected Table for arg#1, got #{type Object}"
-		assertTable Object, "defaults: expected Table for arg#2, got #{type Properties}"
-		Object[I] = Properties[I] for I in pairs Properties when Object[I] == nil
+		assertTable Props, "defaults: expected Table for arg#2, got #{type Props}"
+		Object[I] = Props[I] for I in pairs Props when Object[I] == nil
 		Object
 
 	keys: (Object) ->
@@ -233,7 +235,7 @@ U = {
 	-- Strings
 	plural: (S, N) ->
 		assertType S, 'string', "plural: expected string for arg#1, got #{type S}"
-		assertType N, 'number', "plural: expected number for arg#2, got #{type N}"	
+		assertType N, 'number', "plural: expected number for arg#2, got #{type N}"
 		S .. (N == 1 and '' or 's')
 
 	capFirst: (S) ->
@@ -267,7 +269,13 @@ U = {
 		U.reduce Substitutions, (S, V, I) -> S\gsub '['..V..']', tostring I
 
 	-- Math
-	rr: (val, min, max, change = 0) -> min + (val-min+change)%(max-min+1) -- round robin
+	rr: (val, min, max, change = 0) ->
+		assertType val, 'number', "rr: expected number for arg#1, got #{type val}"
+		assertType min, 'number', "rr: expected number for arg#2, got #{type min}"
+		assertType max, 'number', "rr: expected number for arg#3, got #{type max}"
+		assertType change, 'number', "rr: expected number for arg#4, got #{type change}"
+
+		min + (val-min+change)%(max-min+1) -- round robin
 
 	-- Helper
 	chain: (Value) ->

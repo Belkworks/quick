@@ -326,6 +326,8 @@ U = {
     if N == nil then
       N = 1
     end
+    assertTable(List, "first: expected Table for arg#1, got " .. tostring(type(List)))
+    assertType(N, 'number', "first: expected number for arg#2, got " .. tostring(type(N)))
     local _accum_0 = { }
     local _len_0 = 1
     for I, V in pairs(List) do
@@ -340,16 +342,16 @@ U = {
     if Sep == nil then
       Sep = ''
     end
-    assertTable(List, "join: expected Table for arg#1, got " .. tostring(type(Object)))
+    assertTable(List, "join: expected Table for arg#1, got " .. tostring(type(List)))
     assertType(Sep, 'string', "join: expected string for arg#1, got " .. tostring(type(S)))
     return table.concat(List, Sep)
   end,
-  defaults = function(Object, Properties)
+  defaults = function(Object, Props)
     assertTable(Object, "defaults: expected Table for arg#1, got " .. tostring(type(Object)))
-    assertTable(Object, "defaults: expected Table for arg#2, got " .. tostring(type(Properties)))
-    for I in pairs(Properties) do
+    assertTable(Props, "defaults: expected Table for arg#2, got " .. tostring(type(Props)))
+    for I in pairs(Props) do
       if Object[I] == nil then
-        Object[I] = Properties[I]
+        Object[I] = Props[I]
       end
     end
     return Object
@@ -415,6 +417,10 @@ U = {
     if change == nil then
       change = 0
     end
+    assertType(val, 'number', "rr: expected number for arg#1, got " .. tostring(type(val)))
+    assertType(min, 'number', "rr: expected number for arg#2, got " .. tostring(type(min)))
+    assertType(max, 'number', "rr: expected number for arg#3, got " .. tostring(type(max)))
+    assertType(change, 'number', "rr: expected number for arg#4, got " .. tostring(type(change)))
     return min + (val - min + change) % (max - min + 1)
   end,
   chain = function(Value)
