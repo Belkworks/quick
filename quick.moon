@@ -235,7 +235,7 @@ U = {
 
 		Default
 
-	curry: (N, Fn, args = {}) ->
+	curry: (N, Fn, args = {}) -> -- curry Fn with N args
 		(v) ->
 			a = [v for v in *args]
 			n = N - 1
@@ -243,7 +243,10 @@ U = {
 				Fn unpack(a), v
 			else
 				table.insert a, v
-				curry n, Fn, a
+				U.curry n, Fn, a
+
+	uncurry: (Fn) -> -- return uncurry runner
+		(...) -> U.reduce {...}, ((s, v) -> s v), Fn
 
 	-- debounce(state = false) -> (set = true) -> bool
 	debounce: (state = false) ->

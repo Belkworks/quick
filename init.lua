@@ -417,8 +417,17 @@ U = {
         return Fn(unpack(a), v)
       else
         table.insert(a, v)
-        return curry(n, Fn, a)
+        return U.curry(n, Fn, a)
       end
+    end
+  end,
+  uncurry = function(Fn)
+    return function(...)
+      return U.reduce({
+        ...
+      }, (function(s, v)
+        return s(v)
+      end), Fn)
     end
   end,
   debounce = function(state)
