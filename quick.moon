@@ -271,6 +271,22 @@ U = {
 		deb = U.debounce not state
 		(set) -> not deb not set
 
+	stack: (state = {}) ->
+		{
+			isEmpty: -> #state == 0
+			push: (v) -> table.insert state, v
+			pop: -> table.remove state
+			peek: -> state[#state]
+		}
+
+	queue: (state = {}) ->
+		{
+			isEmpty: -> #state == 0
+			push: (v) -> table.insert state, v
+			next: -> table.remove state, 1
+			peek: -> state[1]
+		}
+
 }
 
 if game
