@@ -132,6 +132,7 @@ U = {
   end,
   each = function(List, Fn)
     assertTable(List, "each: expected Table for arg#1, got " .. tostring(type(List)))
+    Fn = U.iteratee(Fn)
     assertType(Fn, 'function', "each: expected Function for arg#2, got " .. tostring(type(Fn)))
     for I, V in pairs(List) do
       Fn(V, I, List)
@@ -161,6 +162,7 @@ U = {
   end,
   find = function(List, Fn)
     assertTable(List, "find: expected Table for arg#1, got " .. tostring(type(List)))
+    Fn = U.iteratee(Fn)
     assertType(Fn, 'function', "find: expected Function for arg#2, got " .. tostring(type(Fn)))
     for I, V in pairs(List) do
       if Fn(V, I, List) then
@@ -170,6 +172,7 @@ U = {
   end,
   filter = function(List, Fn)
     assertTable(List, "filter: expected Table for arg#1, got " .. tostring(type(List)))
+    Fn = U.iteratee(Fn)
     assertType(Fn, 'function', "filter: expected Function for arg#2, got " .. tostring(type(Fn)))
     local _accum_0 = { }
     local _len_0 = 1
@@ -199,6 +202,7 @@ U = {
   end,
   reject = function(List, Fn)
     assertTable(List, "reject: expected Table for arg#1, got " .. tostring(type(List)))
+    Fn = U.iteratee(Fn)
     assertType(Fn, 'function', "reject: expected Function for arg#2, got " .. tostring(type(Fn)))
     local _accum_0 = { }
     local _len_0 = 1
@@ -212,6 +216,7 @@ U = {
   end,
   every = function(List, Fn)
     assertTable(List, "every: expected Table for arg#1, got " .. tostring(type(List)))
+    Fn = U.iteratee(Fn)
     assertType(Fn, 'function', "every: expected Function for arg#2, got " .. tostring(type(Fn)))
     for I, V in pairs(List) do
       if not Fn(V, I, List) then
@@ -222,11 +227,13 @@ U = {
   end,
   some = function(List, Fn)
     assertTable(List, "some: expected Table for arg#1, got " .. tostring(type(List)))
+    Fn = U.iteratee(Fn)
     assertType(Fn, 'function', "some: expected Function for arg#2, got " .. tostring(type(Fn)))
     return nil ~= U.find(List, Fn)
   end,
   none = function(List, Fn)
     assertTable(List, "none: expected Table for arg#1, got " .. tostring(type(List)))
+    Fn = U.iteratee(Fn)
     assertType(Fn, 'function', "none: expected Function for arg#2, got " .. tostring(type(Fn)))
     return not U.some(List, Fn)
   end,

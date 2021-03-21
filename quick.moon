@@ -71,6 +71,7 @@ U = {
 	-- Collections
 	each: (List, Fn) -> -- Runs Fn on each element
 		assertTable List, "each: expected Table for arg#1, got #{type List}"
+		Fn = U.iteratee Fn
 		assertType Fn, 'function', "each: expected Function for arg#2, got #{type Fn}"
 		Fn V, I, List for I, V in pairs List
 		List
@@ -93,11 +94,13 @@ U = {
 
 	find: (List, Fn) -> -- Returns first value that passes Fn
 		assertTable List, "find: expected Table for arg#1, got #{type List}"
+		Fn = U.iteratee Fn
 		assertType Fn, 'function', "find: expected Function for arg#2, got #{type Fn}"
 		return V for I, V in pairs List when Fn V, I, List
 
 	filter: (List, Fn) -> -- Returns each value that passes Fn
 		assertTable List, "filter: expected Table for arg#1, got #{type List}"
+		Fn = U.iteratee Fn
 		assertType Fn, 'function', "filter: expected Function for arg#2, got #{type Fn}"
 		[V for I, V in pairs List when Fn V, I, List]
 
@@ -115,22 +118,26 @@ U = {
 
 	reject: (List, Fn) -> -- Opposite of filter, returns failed Fn
 		assertTable List, "reject: expected Table for arg#1, got #{type List}"
+		Fn = U.iteratee Fn
 		assertType Fn, 'function', "reject: expected Function for arg#2, got #{type Fn}"
 		[V for I, V in pairs List when not Fn V, I, List]
 
 	every: (List, Fn) -> -- Returns true if every element passes Fn
 		assertTable List, "every: expected Table for arg#1, got #{type List}"
+		Fn = U.iteratee Fn
 		assertType Fn, 'function', "every: expected Function for arg#2, got #{type Fn}"
 		return false for I, V in pairs List when not Fn V, I, List
 		true
 
 	some: (List, Fn) -> -- Returns true if some elements pass Fn
 		assertTable List, "some: expected Table for arg#1, got #{type List}"
+		Fn = U.iteratee Fn
 		assertType Fn, 'function', "some: expected Function for arg#2, got #{type Fn}"
 		nil != U.find List, Fn
 
 	none: (List, Fn) -> -- Returns true if no elements pass Fn
 		assertTable List, "none: expected Table for arg#1, got #{type List}"
+		Fn = U.iteratee Fn
 		assertType Fn, 'function', "none: expected Function for arg#2, got #{type Fn}"
 		return not U.some List, Fn
 
