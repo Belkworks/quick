@@ -38,6 +38,7 @@ _.reduce({1, 2, 3}, function(s, v) return s+v end) -- 6
 
 **find**: `_.find(list, fn) -> value?`  
 Executes `fn` on each element of `list`.  
+`fn` is transformed through `_.iteratee`.  
 Returns the first value that passes `fn`.  
 `fn` receives the parameters `(value, key, list)`
 ```lua
@@ -46,6 +47,7 @@ _.find({1, 2, 3}, function(v) return v > 2 end) -- 3
 
 **filter**: `_.filter(list, fn) -> array`  
 Like **map**, but only keeps values that pass `fn`.  
+`fn` is transformed through `_.iteratee`.  
 The original value, however, is unmodified.  
 `fn` receives the parameters `(value, key, list)`  
 **NOTE**: *Does not return original key!*
@@ -67,6 +69,7 @@ _.where({{a=1,b=4}, {a=2,b=5}, {a=2,b=6}}, {a=2}) -- {{a=2,b=5}, {a=2,b=6}}
 
 **reject**: `_.reject(list, fn) -> array`  
 Opposite of **filter**, returns values that don't pass `fn`.  
+`fn` is transformed through `_.iteratee`.  
 `fn` receives the parameters `(value, key, list)`
 ```lua
 _.reject({1, 2, 3}, function(v) return v > 1 end) -- {1}
@@ -74,6 +77,7 @@ _.reject({1, 2, 3}, function(v) return v > 1 end) -- {1}
 
 **every**: `_.every(list, fn) -> boolean`  
 Returns `true` if every value in `list` passes `fn`.  
+`fn` is transformed through `_.iteratee`.  
 `fn` receives the parameters `(value, key, list)`
 ```lua
 _.every({1, 2, 3}, function(v) return v > 1 end) -- false
@@ -81,9 +85,20 @@ _.every({1, 2, 3}, function(v) return v > 1 end) -- false
 
 **some**: `_.some(list, fn) -> boolean`  
 Returns `true` if any value in `list` passes `fn`.  
+`fn` is transformed through `_.iteratee`.  
 `fn` receives the parameters `(value, key, list)`
+Returns the opposite of `_.none`
 ```lua
 _.some({1, 2, 3}, function(v) return v > 1 end) -- true
+```
+
+**none**: `_.none(list, fn) -> boolean`  
+Returns `true` if no value in `list` passes `fn`.  
+`fn` is transformed through `_.iteratee`.  
+`fn` receives the parameters `(value, key, list)`  
+Returns the opposite of `_.some`
+```lua
+_.none({1, 2, 3}, function(v) return v > 1 end) -- false
 ```
 
 **indexOf**: `_.indexOf(list, value) -> integer?`  
@@ -100,7 +115,8 @@ _.contains({1, 2, 3}, 2) -- true
 ```
 
 **partition**: `_.partition(list, fn) -> array, array`  
-Like **filter**, but the second returned array contains values that didn't pass `fn`.
+Like **filter**, but the second returned array contains values that didn't pass `fn`.  
+`fn` is transformed through `_.iteratee`.  
 ```lua
 _.filter({1, 2, 3}, function(v) return v > 1 end) -- {2, 3}, {1}
 ```
@@ -192,6 +208,12 @@ _.stringify({1,2,3}) -- '[1, 2, 3]'
 _.stringify({a=1, b=2}) -- '{"a": 1, "b": 2}'
 ```
 
+**phone**: `_.phone(string) -> string`  
+Turns any phone word into a phone number.
+```lua
+_.phone('1-800-scripts') -- '1-800-7274787'
+```
+
 ### Math
 
 **rr**: `_.rr(value, min, max, change = 0) -> number`  
@@ -207,6 +229,40 @@ _.rr(8, 1, 10, 3) -- 1
 ```
 
 ### Utilities
+
+**iteratee**: `_.iteratee(any) -> function`  
+Returns a function based on the input type of `any`.  
+`String -> _.property(any)`  
+`Function -> any`  
+`Table -> _.matcher(any)`  
+`nil -> _.identity`  
+This function can then be applied to a value.  
+Used internally by `filter`, `find`, `map`, `partition`, `reject`, `some`, `none`, and`every`.
+
+**property**: `_.property(path) -> (list) -> value?`  
+Returns a function that indexes `list` with `path`.  
+If `path` is an array, it will be iterated on the object.  
+```lua
+_.property('a')({a=1}) -- 1
+_.property({'a','b'})({a={b=2}}) -- 2
+```
+
+**matcher**: `_.matcher(props) -> (object) -> boolean`  
+Returns a function that returns `true` if `object` meets all properties in `props`.  
+Uses `_.isMatch` internally.  
+Does not recurse (yet)
+```lua
+_.matcher({a=1})({a=1,b=2}) -- true
+_.matcher({a=1,b={1}})({a=1,b={1}}) -- false (doesnt recurse yet)
+```
+
+**isMatch**: `_.isMatch(object, props) -> boolean`
+Returns `true` if `object` meets all properties in `props`.  
+Does not recurse (yet)
+```lua
+_.isMatch({a=1}, {a=1,b=2}) -- true
+_.isMatch({a=1,b={1}}, {a=1,b={1}}) -- false (doesnt recurse yet)
+```
 
 **times**: `_.times(num, fn) -> array`  
 Calls `fn` `num` times, with the current execution passed to `fn` as its only parameter.  
