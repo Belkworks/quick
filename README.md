@@ -366,6 +366,44 @@ down(false) -- false
 down(true) -- false
 ```
 
+### Data Structures
+
+**stack**: `_.stack(state = {}) -> Stack`  
+Returns a Stack that starts at `state`.  
+Stack has the following methods:  
+`isEmpty() -> boolean`: Returns whether the stack is empty.  
+`push(element) -> number`: Pushes `element` onto the stack, returns the new length.  
+`pop() -> element`: Returns (and removes) the element at the top of the stack.  
+`peek() -> element`: Like `pop`, but doesn't remove it.  
+The Stack's internal state can be accessed via the `state` property.
+```lua
+s = _.stack()
+s.push(5) -- 1
+s.push(4) -- 2
+s.push(3) -- 3
+s.pop() -- 3
+s.peek() -- 4
+s.pop() -- 4
+```
+
+**queue**: `_.queue(state = {}) -> Queue`  
+Returns a Queue that starts at `state`.  
+Queue has the following methods:  
+`isEmpty() -> boolean`: Returns whether the queue is empty.  
+`push(element) -> number`: Pushes `element` onto the queue, returns the new length.  
+`next() -> element`: Returns (and removes) the next element in the queue.  
+`peek() -> element`: Like `next`, but doesn't remove it.  
+The Queue's internal state can be accessed via the `state` property.
+```lua
+q = _.queue()
+q.push(5) -- 1
+q.push(4) -- 2
+q.push(3) -- 3
+q.next() -- 5
+q.peek() -- 4
+q.next() -- 4
+```
+
 ### OOP Style
 
 You can wrap a value with quick functions by calling `_(value)`.  
