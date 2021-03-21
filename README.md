@@ -301,14 +301,6 @@ end
 _.uncurry(add)(1, 2) -- 3 
 ```
 
-```lua
-plural = _.curry(2, _.plural)
-pieces = plural('pieces')
-pieces(2) -- 'pieces'
-pieces(1) -- 'piece'
-pieces(0) -- 'pieces'
-```
-
 **chain**: `_.chain(value) -> object`  
 Allows fluent method chaining on a value.  
 Each subsequent call is wrapped in a new `chain`.  
