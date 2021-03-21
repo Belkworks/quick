@@ -1,11 +1,26 @@
 -- quick.moon
 -- SFZILabs 2020
 
-assertType = (Value, Type, Error) -> assert Type == type(Value), Error
-assertTable = (Value, Error) -> assertType Value, 'table', Error
+enforce = (Name, Types, ...) ->
+	if type(Types) != 'table'
+		Types = { Types }
+
+	args = {...}
+	for i, v in pairs args
+		if T = Types[i]
+			switch type T
+				when 'string' -- just compare type
+					t = type(args[i])
+					assert t == T, Name..': expected '..T..' for arg#'..i..', got '..t
+				when 'function'
+					assert T(args[i]), Name..': arg#'..i..' failed typecheck!'
+				else error 'enforce: unexpected type!'
 
 U = {}
 U = {
+	-- Typechecking
+	:enforce
+
 	-- Utility
 	noop: ->
 	ab: (Choice, A, B) -> Choice and A or B
@@ -32,8 +47,7 @@ U = {
 		not U.isArray List
 
 	isMatch: (Object, Props) -> -- Returns true if Object matches Props
-		assertTable Object, "matchKeys: expected Object for arg#1, got #{type Object}"
-		assertTable Props, "matchKeys: expected Object for arg#2, got #{type Props}"
+		enforce 'isMatch', {'table', 'table'}, Object, Props
 		return false for I, V in pairs Props when Object[I] ~= V
 		true
 
@@ -53,7 +67,7 @@ U = {
 			Object
 
 	values: (List) ->
-		assertTable List, "values: expected Table for arg#1, got #{type List}"
+		enforce 'values', 'table', List
 		return List if U.isArray List
 		[V for _, V in pairs List]
 
@@ -70,20 +84,17 @@ U = {
 
 	-- Collections
 	each: (List, Fn) -> -- Runs Fn on each element
-		assertTable List, "each: expected Table for arg#1, got #{type List}"
-		Fn = U.iteratee Fn
-		assertType Fn, 'function', "each: expected Function for arg#2, got #{type Fn}"
+		enforce 'each', 'table', List
+		Fn = U.iteratee Fn -- don't need to typecheck Fn
 		Fn V, I, List for I, V in pairs List
 		List
 	
 	map: (List, Fn) -> -- Returns list of Fn (element)
-		assertTable List, "map: expected Table for arg#1, got #{type List}"
-		assertType Fn, 'function', "map: expected Function for arg#2, got #{type Fn}"
+		enforce 'map', {'table', 'function'}, List, Fn
 		{I, Fn V, I, List for I, V in pairs List}
 
 	reduce: (List, Fn, State) -> -- Reduces list to single value, state defaults to first value
-		assertTable List, "reduce: expected Table for arg#1, got #{type List}"
-		assertType Fn, 'function', "reduce: expected Function for arg#2, got #{type Fn}"
+		enforce 'reduce', {'table', 'function'}, List, Fn
 		
 		for I, V in pairs List
 			State = if State == nil and I == 1 -- skip the first
@@ -93,75 +104,63 @@ U = {
 		State
 
 	find: (List, Fn) -> -- Returns first value that passes Fn
-		assertTable List, "find: expected Table for arg#1, got #{type List}"
+		enforce 'find', 'table', List
 		Fn = U.iteratee Fn
-		assertType Fn, 'function', "find: expected Function for arg#2, got #{type Fn}"
 		return V for I, V in pairs List when Fn V, I, List
 
-	filter: (List, Fn) -> -- Returns each value that passes Fn
-		assertTable List, "filter: expected Table for arg#1, got #{type List}"
-		Fn = U.iteratee Fn
-		assertType Fn, 'function', "filter: expected Function for arg#2, got #{type Fn}"
-		[V for I, V in pairs List when Fn V, I, List]
-
 	findWhere: (List, Props) -> -- Returns first object matching properties
-		assertTable List, "findWhere: expected Array for arg#1, got #{type List}"
-		assertTable Props, "findWhere: expected Object for arg#2, got #{type Props}"
+		enforce 'findWhere', {'table', 'table'}, List, Props
 		U.find List, (O) -> U.isMatch O, Props
 
 	where: (List, Props) -> -- Returns all objects matching properties
-		assertTable List, "where: expected Array for arg#1, got #{type List}"
-		assertTable Props, "where: expected Object for arg#2, got #{type Props}"
-		assert U.isArray(List), "where: expected Array for arg#1, got Object"
-		assert U.isObject(Props), "where: expected Object for arg#2, got Array"
+		enforce 'findWhere', {'table', 'table'}, List, Props
 		U.filter List, (O) -> U.isMatch O, Props
 
-	reject: (List, Fn) -> -- Opposite of filter, returns failed Fn
-		assertTable List, "reject: expected Table for arg#1, got #{type List}"
+	filter: (List, Fn) -> -- Returns each value that passes Fn
+		enforce 'filter', 'table', List
 		Fn = U.iteratee Fn
-		assertType Fn, 'function', "reject: expected Function for arg#2, got #{type Fn}"
+		[V for I, V in pairs List when Fn V, I, List]
+
+	reject: (List, Fn) -> -- Opposite of filter, returns failed Fn
+		enforce 'reject', 'table', List
+		Fn = U.iteratee Fn
 		[V for I, V in pairs List when not Fn V, I, List]
 
 	every: (List, Fn) -> -- Returns true if every element passes Fn
-		assertTable List, "every: expected Table for arg#1, got #{type List}"
+		enforce 'every', 'table', List
 		Fn = U.iteratee Fn
-		assertType Fn, 'function', "every: expected Function for arg#2, got #{type Fn}"
 		return false for I, V in pairs List when not Fn V, I, List
 		true
 
 	some: (List, Fn) -> -- Returns true if some elements pass Fn
-		assertTable List, "some: expected Table for arg#1, got #{type List}"
+		enforce 'some', 'table', List
 		Fn = U.iteratee Fn
-		assertType Fn, 'function', "some: expected Function for arg#2, got #{type Fn}"
 		nil != U.find List, Fn
 
 	none: (List, Fn) -> -- Returns true if no elements pass Fn
-		assertTable List, "none: expected Table for arg#1, got #{type List}"
+		enforce 'none', 'table', List
 		Fn = U.iteratee Fn
-		assertType Fn, 'function', "none: expected Function for arg#2, got #{type Fn}"
 		return not U.some List, Fn
 
 	indexOf: (List, Element) -> -- Returns index of Element in List
-		assertTable List, "indexOf: expected Table for arg#1, got #{type List}"
+		enforce 'indexOf', 'table', List
 		return I for I, V in pairs List when V == Element
 
 	contains: (List, Element) -> -- Returns true if List has Element
-		assertTable List, "contains: expected Table for arg#1, got #{type List}"
+		enforce 'contains', 'table', List
 		nil ~= U.indexOf List, Element
 
 	invoke: (List, Method, ...) -> -- Returns list of value[method] ...
-		assertTable List, "invoke: expected Table for arg#1, got #{type List}"
+		enforce 'invoke', {'table', 'string'}, List, Method
 		Args = {...}
 		U.map List, (V) -> V[Method] unpack Args
 
 	pluck: (List, Key) -> -- Returns list of each value[key]
-		assertTable List, "pluck: expected Table for arg#1, got #{type List}"
-		U.map List, (V, I) ->
-			assertTable V, "pluck: expected Table for element #{I}, got #{type V}"
-			V[Key]
+		enforce 'pluck', 'table', List
+		U.map List, (V, I) -> V[Key]
 
 	shuffle: (List) -> -- Returns shuffled copy
-		assertTable List, "shuffle: expected Array for arg#1, got #{type List}"
+		enforce 'shuffle', 'table', List
 		List = U.softCopy U.values List
 		Result = {}
 		while #List > 1
@@ -170,17 +169,14 @@ U = {
 		Result
 
 	sort: (List, Fn) -> -- Returns a sorted copy
-		assertTable List, "sort: expected Array for arg#1, got #{type List}"
-		if Fn
-			assertType Fn, 'function', "sort: expected Function for arg#2, got #{type Fn}"
-
+		enforce 'sort', {'table', 'function'}, List, Fn
 		List = U.softCopy U.values List
 		table.sort List, Fn
 
 		List
 
 	reverse: (List) -> -- Returns a backwards copy
-		assertTable List, "reverse: expected Array for arg#1, got #{type List}"
+		enforce 'reverse', 'table', List
 		List = U.softCopy U.values List
 		
 		Result = {}
@@ -191,14 +187,13 @@ U = {
 		Result
 
 	sample: (List, N = 1) -> -- Returns random sample
-		assertTable List, "sample: expected Array for arg#1, got #{type List}"
+		enforce 'sample', {'table', 'number'}, List, N
 		U.first U.shuffle(List), N
 
 	size: (List) -> #U.values List -- Returns count of array/object
 
 	partition: (List, Fn) -> -- Returns list of passing values and list of failing values
-		assertTable List, "partition: expected Table for arg#1, got #{type List}"
-		assertType Fn, 'function', "partition: expected Function for arg#2, got #{type Fn}"
+		enforce 'partition', {'table', 'function'}, List, Fn
 		Pass, Fail = {}, {}
 		for I, V in pairs List
 			if Fn V, I, List
@@ -208,38 +203,34 @@ U = {
 		Pass, Fail
 
 	compact: (List) -> -- Filter out falsy values
-		assertTable List, "compact: expected Table for arg#1, got #{type List}"
+		enforce 'compact', 'table', List
 		U.filter List, (V) -> V
 
 	first: (List, N = 1) -> -- Get first N of List 
-		assertTable List, "first: expected Table for arg#1, got #{type List}"
-		assertType N, 'number', "first: expected number for arg#2, got #{type N}"
+		enforce 'first', {'table', 'number'}, List, N
 		[V for I, V in pairs List when I <= N]
 
 	join: (List, Sep = '') -> -- Concat a table
-		assertTable List, "join: expected Table for arg#1, got #{type List}"
-		assertType Sep, 'string', "join: expected string for arg#1, got #{type S}"
+		enforce 'join', {'table', 'string'}, List, Sep
 		table.concat List, Sep
 
 	-- Objects
 	defaults: (Object, Props) ->
-		assertTable Object, "defaults: expected Table for arg#1, got #{type Object}"
-		assertTable Props, "defaults: expected Table for arg#2, got #{type Props}"
+		enforce 'defaults', {'table', 'table'}, Object, Props
 		Object[I] = Props[I] for I in pairs Props when Object[I] == nil
 		Object
 
 	keys: (Object) ->
-		assertTable Object, "keys: expected Table for arg#1, got #{type Object}"
+		enforce 'keys', 'table', Object
 		[I for I in pairs Object]
 
 	-- Strings
 	plural: (S, N) ->
-		assertType S, 'string', "plural: expected string for arg#1, got #{type S}"
-		assertType N, 'number', "plural: expected number for arg#2, got #{type N}"
+		enforce 'plural', {'string', 'number'}, S, N
 		S .. (N == 1 and '' or 's')
 
 	capFirst: (S) ->
-		assertType S, 'string', "capFirst: expected string for arg#1, got #{type S}"
+		enforce 'capFirst', 'string', S
 		S\sub(1,1)\upper! .. S\sub 2
 
 	stringify: (A) ->
@@ -260,7 +251,7 @@ U = {
 			else tostring A
 	
 	phone: (S) ->
-		assertType S, 'string', "phone: expected string for arg#1, got #{type S}"
+		enforce 'phone', 'string', S
 		Substitutions = {
 			S\upper!, 'ABC', 'DEF',
 			'GHI', 'JKL', 'MNO',
@@ -270,11 +261,7 @@ U = {
 
 	-- Math
 	rr: (val, min, max, change = 0) ->
-		assertType val, 'number', "rr: expected number for arg#1, got #{type val}"
-		assertType min, 'number', "rr: expected number for arg#2, got #{type min}"
-		assertType max, 'number', "rr: expected number for arg#3, got #{type max}"
-		assertType change, 'number', "rr: expected number for arg#4, got #{type change}"
-
+		enforce 'rr', {'number', 'number', 'number', 'number'}, val, min, max, change
 		min + (val-min+change)%(max-min+1) -- round robin
 
 	-- Helper
@@ -291,13 +278,11 @@ U = {
 			else error 'failed to find ' .. FnName
 
 	times: (N, Fn) ->
-		assertType N, 'number', "times: expected number for arg#1, got #{type N}"
-		assertType Fn, 'function', "times: expected function for arg#2, got #{type Fn}"	
+		enforce 'times', {'number', 'function'}, N, Fn
 		[Fn i for i = 1, N]
 
 	result: (Object, Key, Default) ->
-		assertType Object, 'table', "result: expected Table for arg#1, got #{type Object}"
-		assert Key != nil, 'result: expected key for arg#2, got nil'
+		enforce 'result', {'table', 'string'}, Object, Key
 
 		X = Object[Key]
 		return X if X != nil
@@ -305,8 +290,8 @@ U = {
 		Default
 
 	curry: (N, Fn, args = {}) ->
-		assertType N, 'number', "curry: expected number for arg#1, got #{type N}"
-		assertType Fn, 'function', "curry: expected function for arg#2, got #{type Fn}"	
+		enforce 'result', {'number', 'function'}, N, Fn
+
 		(v) ->
 			a = [v for v in *args]
 			n = N - 1
@@ -318,8 +303,7 @@ U = {
 
 	-- debounce(state = false) -> (set = true) -> bool
 	debounce: (state = false) ->
-		assertType state, 'boolean',
-			"debounce: expected boolean for arg#1, got #{type state}"
+		enforce 'debounce', 'boolean', state
 
 		(set = true) ->
 			if set == false
@@ -332,16 +316,14 @@ U = {
 
 	-- rising(state = false) -> (set) -> bool
 	rising: (state = false) ->
-		assertType state, 'boolean',
-			"rising: expected boolean for arg#1, got #{type state}"
+		enforce 'rising', 'boolean', state
 
 		deb = U.debounce state
 		(set) -> not deb set
 
 	-- rising(state = true) -> (set) -> bool
 	falling: (state = true) ->
-		assertType state, 'boolean',
-			"falling: expected boolean for arg#1, got #{type state}"
+		enforce 'falling', 'boolean', state
 
 		deb = U.debounce not state
 		(set) -> not deb not set

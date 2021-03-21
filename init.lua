@@ -1,13 +1,33 @@
-local assertType
-assertType = function(Value, Type, Error)
-  return assert(Type == type(Value), Error)
-end
-local assertTable
-assertTable = function(Value, Error)
-  return assertType(Value, 'table', Error)
+local enforce
+enforce = function(Name, Types, ...)
+  if type(Types) ~= 'table' then
+    Types = {
+      Types
+    }
+  end
+  local args = {
+    ...
+  }
+  for i, v in pairs(args) do
+    do
+      local T = Types[i]
+      if T then
+        local _exp_0 = type(T)
+        if 'string' == _exp_0 then
+          local t = type(args[i])
+          assert(t == T, Name .. ': expected ' .. T .. ' for arg#' .. i .. ', got ' .. t)
+        elseif 'function' == _exp_0 then
+          assert(T(args[i]), Name .. ': arg#' .. i .. ' failed typecheck!')
+        else
+          error('enforce: unexpected type!')
+        end
+      end
+    end
+  end
 end
 local U = { }
 U = {
+  enforce = enforce,
   noop = function() end,
   ab = function(Choice, A, B)
     return Choice and A or B
@@ -54,8 +74,10 @@ U = {
     return not U.isArray(List)
   end,
   isMatch = function(Object, Props)
-    assertTable(Object, "matchKeys: expected Object for arg#1, got " .. tostring(type(Object)))
-    assertTable(Props, "matchKeys: expected Object for arg#2, got " .. tostring(type(Props)))
+    enforce('isMatch', {
+      'table',
+      'table'
+    }, Object, Props)
     for I, V in pairs(Props) do
       if Object[I] ~= V then
         return false
@@ -88,7 +110,7 @@ U = {
     end
   end,
   values = function(List)
-    assertTable(List, "values: expected Table for arg#1, got " .. tostring(type(List)))
+    enforce('values', 'table', List)
     if U.isArray(List) then
       return List
     end
@@ -131,17 +153,18 @@ U = {
     end
   end,
   each = function(List, Fn)
-    assertTable(List, "each: expected Table for arg#1, got " .. tostring(type(List)))
+    enforce('each', 'table', List)
     Fn = U.iteratee(Fn)
-    assertType(Fn, 'function', "each: expected Function for arg#2, got " .. tostring(type(Fn)))
     for I, V in pairs(List) do
       Fn(V, I, List)
     end
     return List
   end,
   map = function(List, Fn)
-    assertTable(List, "map: expected Table for arg#1, got " .. tostring(type(List)))
-    assertType(Fn, 'function', "map: expected Function for arg#2, got " .. tostring(type(Fn)))
+    enforce('map', {
+      'table',
+      'function'
+    }, List, Fn)
     local _tbl_0 = { }
     for I, V in pairs(List) do
       _tbl_0[I] = Fn(V, I, List)
@@ -149,8 +172,10 @@ U = {
     return _tbl_0
   end,
   reduce = function(List, Fn, State)
-    assertTable(List, "reduce: expected Table for arg#1, got " .. tostring(type(List)))
-    assertType(Fn, 'function', "reduce: expected Function for arg#2, got " .. tostring(type(Fn)))
+    enforce('reduce', {
+      'table',
+      'function'
+    }, List, Fn)
     for I, V in pairs(List) do
       if State == nil and I == 1 then
         State = V
@@ -161,19 +186,35 @@ U = {
     return State
   end,
   find = function(List, Fn)
-    assertTable(List, "find: expected Table for arg#1, got " .. tostring(type(List)))
+    enforce('find', 'table', List)
     Fn = U.iteratee(Fn)
-    assertType(Fn, 'function', "find: expected Function for arg#2, got " .. tostring(type(Fn)))
     for I, V in pairs(List) do
       if Fn(V, I, List) then
         return V
       end
     end
   end,
+  findWhere = function(List, Props)
+    enforce('findWhere', {
+      'table',
+      'table'
+    }, List, Props)
+    return U.find(List, function(O)
+      return U.isMatch(O, Props)
+    end)
+  end,
+  where = function(List, Props)
+    enforce('findWhere', {
+      'table',
+      'table'
+    }, List, Props)
+    return U.filter(List, function(O)
+      return U.isMatch(O, Props)
+    end)
+  end,
   filter = function(List, Fn)
-    assertTable(List, "filter: expected Table for arg#1, got " .. tostring(type(List)))
+    enforce('filter', 'table', List)
     Fn = U.iteratee(Fn)
-    assertType(Fn, 'function', "filter: expected Function for arg#2, got " .. tostring(type(Fn)))
     local _accum_0 = { }
     local _len_0 = 1
     for I, V in pairs(List) do
@@ -184,26 +225,9 @@ U = {
     end
     return _accum_0
   end,
-  findWhere = function(List, Props)
-    assertTable(List, "findWhere: expected Array for arg#1, got " .. tostring(type(List)))
-    assertTable(Props, "findWhere: expected Object for arg#2, got " .. tostring(type(Props)))
-    return U.find(List, function(O)
-      return U.isMatch(O, Props)
-    end)
-  end,
-  where = function(List, Props)
-    assertTable(List, "where: expected Array for arg#1, got " .. tostring(type(List)))
-    assertTable(Props, "where: expected Object for arg#2, got " .. tostring(type(Props)))
-    assert(U.isArray(List), "where: expected Array for arg#1, got Object")
-    assert(U.isObject(Props), "where: expected Object for arg#2, got Array")
-    return U.filter(List, function(O)
-      return U.isMatch(O, Props)
-    end)
-  end,
   reject = function(List, Fn)
-    assertTable(List, "reject: expected Table for arg#1, got " .. tostring(type(List)))
+    enforce('reject', 'table', List)
     Fn = U.iteratee(Fn)
-    assertType(Fn, 'function', "reject: expected Function for arg#2, got " .. tostring(type(Fn)))
     local _accum_0 = { }
     local _len_0 = 1
     for I, V in pairs(List) do
@@ -215,9 +239,8 @@ U = {
     return _accum_0
   end,
   every = function(List, Fn)
-    assertTable(List, "every: expected Table for arg#1, got " .. tostring(type(List)))
+    enforce('every', 'table', List)
     Fn = U.iteratee(Fn)
-    assertType(Fn, 'function', "every: expected Function for arg#2, got " .. tostring(type(Fn)))
     for I, V in pairs(List) do
       if not Fn(V, I, List) then
         return false
@@ -226,19 +249,17 @@ U = {
     return true
   end,
   some = function(List, Fn)
-    assertTable(List, "some: expected Table for arg#1, got " .. tostring(type(List)))
+    enforce('some', 'table', List)
     Fn = U.iteratee(Fn)
-    assertType(Fn, 'function', "some: expected Function for arg#2, got " .. tostring(type(Fn)))
     return nil ~= U.find(List, Fn)
   end,
   none = function(List, Fn)
-    assertTable(List, "none: expected Table for arg#1, got " .. tostring(type(List)))
+    enforce('none', 'table', List)
     Fn = U.iteratee(Fn)
-    assertType(Fn, 'function', "none: expected Function for arg#2, got " .. tostring(type(Fn)))
     return not U.some(List, Fn)
   end,
   indexOf = function(List, Element)
-    assertTable(List, "indexOf: expected Table for arg#1, got " .. tostring(type(List)))
+    enforce('indexOf', 'table', List)
     for I, V in pairs(List) do
       if V == Element then
         return I
@@ -246,11 +267,14 @@ U = {
     end
   end,
   contains = function(List, Element)
-    assertTable(List, "contains: expected Table for arg#1, got " .. tostring(type(List)))
+    enforce('contains', 'table', List)
     return nil ~= U.indexOf(List, Element)
   end,
   invoke = function(List, Method, ...)
-    assertTable(List, "invoke: expected Table for arg#1, got " .. tostring(type(List)))
+    enforce('invoke', {
+      'table',
+      'string'
+    }, List, Method)
     local Args = {
       ...
     }
@@ -259,14 +283,13 @@ U = {
     end)
   end,
   pluck = function(List, Key)
-    assertTable(List, "pluck: expected Table for arg#1, got " .. tostring(type(List)))
+    enforce('pluck', 'table', List)
     return U.map(List, function(V, I)
-      assertTable(V, "pluck: expected Table for element " .. tostring(I) .. ", got " .. tostring(type(V)))
       return V[Key]
     end)
   end,
   shuffle = function(List)
-    assertTable(List, "shuffle: expected Array for arg#1, got " .. tostring(type(List)))
+    enforce('shuffle', 'table', List)
     List = U.softCopy(U.values(List))
     local Result = { }
     while #List > 1 do
@@ -276,16 +299,16 @@ U = {
     return Result
   end,
   sort = function(List, Fn)
-    assertTable(List, "sort: expected Array for arg#1, got " .. tostring(type(List)))
-    if Fn then
-      assertType(Fn, 'function', "sort: expected Function for arg#2, got " .. tostring(type(Fn)))
-    end
+    enforce('sort', {
+      'table',
+      'function'
+    }, List, Fn)
     List = U.softCopy(U.values(List))
     table.sort(List, Fn)
     return List
   end,
   reverse = function(List)
-    assertTable(List, "reverse: expected Array for arg#1, got " .. tostring(type(List)))
+    enforce('reverse', 'table', List)
     List = U.softCopy(U.values(List))
     local Result = { }
     while #List > 0 do
@@ -297,15 +320,20 @@ U = {
     if N == nil then
       N = 1
     end
-    assertTable(List, "sample: expected Array for arg#1, got " .. tostring(type(List)))
+    enforce('sample', {
+      'table',
+      'number'
+    }, List, N)
     return U.first(U.shuffle(List), N)
   end,
   size = function(List)
     return #U.values(List)
   end,
   partition = function(List, Fn)
-    assertTable(List, "partition: expected Table for arg#1, got " .. tostring(type(List)))
-    assertType(Fn, 'function', "partition: expected Function for arg#2, got " .. tostring(type(Fn)))
+    enforce('partition', {
+      'table',
+      'function'
+    }, List, Fn)
     local Pass, Fail = { }, { }
     for I, V in pairs(List) do
       if Fn(V, I, List) then
@@ -317,7 +345,7 @@ U = {
     return Pass, Fail
   end,
   compact = function(List)
-    assertTable(List, "compact: expected Table for arg#1, got " .. tostring(type(List)))
+    enforce('compact', 'table', List)
     return U.filter(List, function(V)
       return V
     end)
@@ -326,8 +354,10 @@ U = {
     if N == nil then
       N = 1
     end
-    assertTable(List, "first: expected Table for arg#1, got " .. tostring(type(List)))
-    assertType(N, 'number', "first: expected number for arg#2, got " .. tostring(type(N)))
+    enforce('first', {
+      'table',
+      'number'
+    }, List, N)
     local _accum_0 = { }
     local _len_0 = 1
     for I, V in pairs(List) do
@@ -342,13 +372,17 @@ U = {
     if Sep == nil then
       Sep = ''
     end
-    assertTable(List, "join: expected Table for arg#1, got " .. tostring(type(List)))
-    assertType(Sep, 'string', "join: expected string for arg#1, got " .. tostring(type(S)))
+    enforce('join', {
+      'table',
+      'string'
+    }, List, Sep)
     return table.concat(List, Sep)
   end,
   defaults = function(Object, Props)
-    assertTable(Object, "defaults: expected Table for arg#1, got " .. tostring(type(Object)))
-    assertTable(Props, "defaults: expected Table for arg#2, got " .. tostring(type(Props)))
+    enforce('defaults', {
+      'table',
+      'table'
+    }, Object, Props)
     for I in pairs(Props) do
       if Object[I] == nil then
         Object[I] = Props[I]
@@ -357,7 +391,7 @@ U = {
     return Object
   end,
   keys = function(Object)
-    assertTable(Object, "keys: expected Table for arg#1, got " .. tostring(type(Object)))
+    enforce('keys', 'table', Object)
     local _accum_0 = { }
     local _len_0 = 1
     for I in pairs(Object) do
@@ -367,12 +401,14 @@ U = {
     return _accum_0
   end,
   plural = function(S, N)
-    assertType(S, 'string', "plural: expected string for arg#1, got " .. tostring(type(S)))
-    assertType(N, 'number', "plural: expected number for arg#2, got " .. tostring(type(N)))
+    enforce('plural', {
+      'string',
+      'number'
+    }, S, N)
     return S .. (N == 1 and '' or 's')
   end,
   capFirst = function(S)
-    assertType(S, 'string', "capFirst: expected string for arg#1, got " .. tostring(type(S)))
+    enforce('capFirst', 'string', S)
     return S:sub(1, 1):upper() .. S:sub(2)
   end,
   stringify = function(A)
@@ -397,7 +433,7 @@ U = {
     end
   end,
   phone = function(S)
-    assertType(S, 'string', "phone: expected string for arg#1, got " .. tostring(type(S)))
+    enforce('phone', 'string', S)
     local Substitutions = {
       S:upper(),
       'ABC',
@@ -417,10 +453,12 @@ U = {
     if change == nil then
       change = 0
     end
-    assertType(val, 'number', "rr: expected number for arg#1, got " .. tostring(type(val)))
-    assertType(min, 'number', "rr: expected number for arg#2, got " .. tostring(type(min)))
-    assertType(max, 'number', "rr: expected number for arg#3, got " .. tostring(type(max)))
-    assertType(change, 'number', "rr: expected number for arg#4, got " .. tostring(type(change)))
+    enforce('rr', {
+      'number',
+      'number',
+      'number',
+      'number'
+    }, val, min, max, change)
     return min + (val - min + change) % (max - min + 1)
   end,
   chain = function(Value)
@@ -447,8 +485,10 @@ U = {
     })
   end,
   times = function(N, Fn)
-    assertType(N, 'number', "times: expected number for arg#1, got " .. tostring(type(N)))
-    assertType(Fn, 'function', "times: expected function for arg#2, got " .. tostring(type(Fn)))
+    enforce('times', {
+      'number',
+      'function'
+    }, N, Fn)
     local _accum_0 = { }
     local _len_0 = 1
     for i = 1, N do
@@ -458,8 +498,10 @@ U = {
     return _accum_0
   end,
   result = function(Object, Key, Default)
-    assertType(Object, 'table', "result: expected Table for arg#1, got " .. tostring(type(Object)))
-    assert(Key ~= nil, 'result: expected key for arg#2, got nil')
+    enforce('result', {
+      'table',
+      'string'
+    }, Object, Key)
     local X = Object[Key]
     if X ~= nil then
       return X
@@ -470,8 +512,10 @@ U = {
     if args == nil then
       args = { }
     end
-    assertType(N, 'number', "curry: expected number for arg#1, got " .. tostring(type(N)))
-    assertType(Fn, 'function', "curry: expected function for arg#2, got " .. tostring(type(Fn)))
+    enforce('result', {
+      'number',
+      'function'
+    }, N, Fn)
     return function(v)
       local a
       do
@@ -497,7 +541,7 @@ U = {
     if state == nil then
       state = false
     end
-    assertType(state, 'boolean', "debounce: expected boolean for arg#1, got " .. tostring(type(state)))
+    enforce('debounce', 'boolean', state)
     return function(set)
       if set == nil then
         set = true
@@ -516,7 +560,7 @@ U = {
     if state == nil then
       state = false
     end
-    assertType(state, 'boolean', "rising: expected boolean for arg#1, got " .. tostring(type(state)))
+    enforce('rising', 'boolean', state)
     local deb = U.debounce(state)
     return function(set)
       return not deb(set)
@@ -526,7 +570,7 @@ U = {
     if state == nil then
       state = true
     end
-    assertType(state, 'boolean', "falling: expected boolean for arg#1, got " .. tostring(type(state)))
+    enforce('falling', 'boolean', state)
     local deb = U.debounce(not state)
     return function(set)
       return not deb(not set)
