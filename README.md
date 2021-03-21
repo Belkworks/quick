@@ -58,7 +58,7 @@ _.reject({1, 2, 3}, function(v) return v > 1 end) -- {1}
 Like **filter**, but the second returned array contains values that didn't pass `fn`.  
 `fn` is transformed through `_.iteratee`.  
 ```lua
-_.filter({1, 2, 3}, function(v) return v > 1 end) -- {2, 3}, {1}
+_.partition({1, 2, 3}, function(v) return v > 1 end) -- {2, 3}, {1}
 ```
 
 **find**: `_.find(list, fn) -> value?`  
@@ -255,6 +255,14 @@ _.property('a')({a=1}) -- 1
 _.property({'a','b'})({a={b=2}}) -- 2
 ```
 
+**isMatch**: `_.isMatch(object, props) -> boolean`  
+Returns `true` if `object` meets all properties in `props`.  
+Does not recurse (yet)
+```lua
+_.isMatch({a=1}, {a=1,b=2}) -- true
+_.isMatch({a=1,b={1}}, {a=1,b={1}}) -- false (doesnt recurse yet)
+```
+
 **matcher**: `_.matcher(props) -> (object) -> boolean`  
 Returns a function that returns `true` if `object` meets all properties in `props`.  
 Uses `_.isMatch` internally.  
@@ -262,14 +270,6 @@ Does not recurse (yet)
 ```lua
 _.matcher({a=1})({a=1,b=2}) -- true
 _.matcher({a=1,b={1}})({a=1,b={1}}) -- false (doesnt recurse yet)
-```
-
-**isMatch**: `_.isMatch(object, props) -> boolean`  
-Returns `true` if `object` meets all properties in `props`.  
-Does not recurse (yet)
-```lua
-_.isMatch({a=1}, {a=1,b=2}) -- true
-_.isMatch({a=1,b={1}}, {a=1,b={1}}) -- false (doesnt recurse yet)
 ```
 
 **times**: `_.times(num, fn) -> array`  
@@ -316,7 +316,7 @@ reversed = list.reverse()
 doubled = reversed.map(function(v) return v*2 end)
 doubledReversed = doubled.value() -- {6, 4, 2}
 
--- you don't need to assign the result to a variable
+-- you don't need to assign each step to a variable
 double = function(v) return v*2 end
 doubledReversed = _.chain({1, 2, 3}).reverse().map(double).value() -- {6, 4, 2}
 ```
