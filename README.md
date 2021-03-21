@@ -86,7 +86,7 @@ _.every({1, 2, 3}, function(v) return v > 1 end) -- false
 **some**: `_.some(list, fn) -> boolean`  
 Returns `true` if any value in `list` passes `fn`.  
 `fn` is transformed through `_.iteratee`.  
-`fn` receives the parameters `(value, key, list)`
+`fn` receives the parameters `(value, key, list)`  
 Returns the opposite of `_.none`
 ```lua
 _.some({1, 2, 3}, function(v) return v > 1 end) -- true
@@ -256,7 +256,7 @@ _.matcher({a=1})({a=1,b=2}) -- true
 _.matcher({a=1,b={1}})({a=1,b={1}}) -- false (doesnt recurse yet)
 ```
 
-**isMatch**: `_.isMatch(object, props) -> boolean`
+**isMatch**: `_.isMatch(object, props) -> boolean`  
 Returns `true` if `object` meets all properties in `props`.  
 Does not recurse (yet)
 ```lua
