@@ -39,6 +39,31 @@ If `state` is undefined, `fn` is not called for the first iteration.
 _.reduce({1, 2, 3}, function(s, v) return s+v end) -- 6
 ```
 
+**filter**: `_.filter(list, fn) -> array`  
+Like **map**, but only keeps values that pass `fn`.  
+`fn` is transformed through `_.iteratee`.  
+The original value, however, is unmodified.  
+`fn` receives the parameters `(value, key, list)`  
+**NOTE**: *Does not return original key!*
+```lua
+_.filter({1, 2, 3}, function(v) return v > 1 end) -- {2, 3}
+```
+
+**reject**: `_.reject(list, fn) -> array`  
+Opposite of **filter**, returns values that don't pass `fn`.  
+`fn` is transformed through `_.iteratee`.  
+`fn` receives the parameters `(value, key, list)`
+```lua
+_.reject({1, 2, 3}, function(v) return v > 1 end) -- {1}
+```
+
+**partition**: `_.partition(list, fn) -> array, array`  
+Like **filter**, but the second returned array contains values that didn't pass `fn`.  
+`fn` is transformed through `_.iteratee`.  
+```lua
+_.filter({1, 2, 3}, function(v) return v > 1 end) -- {2, 3}, {1}
+```
+
 **find**: `_.find(list, fn) -> value?`  
 Executes `fn` on each element of `list`.  
 `fn` is transformed through `_.iteratee`.  
@@ -48,14 +73,12 @@ Returns the first value that passes `fn`.
 _.find({1, 2, 3}, function(v) return v > 2 end) -- 3
 ```
 
-**filter**: `_.filter(list, fn) -> array`  
-Like **map**, but only keeps values that pass `fn`.  
+**findIndex**: `_.findIndex(list, fn) -> number?`  
+Like **find**, but returns the index instead of the value.  
 `fn` is transformed through `_.iteratee`.  
-The original value, however, is unmodified.  
-`fn` receives the parameters `(value, key, list)`  
-**NOTE**: *Does not return original key!*
+`fn` receives the parameters `(value, key, list)`
 ```lua
-_.filter({1, 2, 3}, function(v) return v > 1 end) -- {2, 3}
+_.findIndex({4, 5, 6}, function(v) return v == 5 end) -- 2
 ```
 
 **findWhere**: `_.findWhere(list, object) -> value?`  
@@ -68,14 +91,6 @@ _.findWhere({{a=1,b=4}, {a=2,b=5}, {a=3,b=6}}, {a=3}) -- {a=3,b=6}
 Like **findWhere**, but returns *all* objects that match all keys in `object`
 ```lua
 _.where({{a=1,b=4}, {a=2,b=5}, {a=2,b=6}}, {a=2}) -- {{a=2,b=5}, {a=2,b=6}}
-```
-
-**reject**: `_.reject(list, fn) -> array`  
-Opposite of **filter**, returns values that don't pass `fn`.  
-`fn` is transformed through `_.iteratee`.  
-`fn` receives the parameters `(value, key, list)`
-```lua
-_.reject({1, 2, 3}, function(v) return v > 1 end) -- {1}
 ```
 
 **every**: `_.every(list, fn) -> boolean`  
@@ -115,13 +130,6 @@ _.indexOf({3, 2, 1}, 3) -- 1
 Returns `true` if `list` contains `value`.
 ```lua
 _.contains({1, 2, 3}, 2) -- true
-```
-
-**partition**: `_.partition(list, fn) -> array, array`  
-Like **filter**, but the second returned array contains values that didn't pass `fn`.  
-`fn` is transformed through `_.iteratee`.  
-```lua
-_.filter({1, 2, 3}, function(v) return v > 1 end) -- {2, 3}, {1}
 ```
 
 **first**: `_.first(list, N = 1) -> array`  
@@ -240,7 +248,7 @@ Returns a function based on the input type of `any`.
 `Table -> _.matcher(any)`  
 `nil -> _.identity`  
 This function can then be applied to a value.  
-Used internally by `filter`, `find`, `map`, `partition`, `reject`, `some`, `none`, and`every`.
+Used internally by `filter`, `find`, `findIndex`, `map`, `partition`, `reject`, `some`, `none`, and`every`.
 
 **property**: `_.property(path) -> (list) -> value?`  
 Returns a function that indexes `list` with `path`.  
@@ -276,6 +284,23 @@ _.times(3, function(i) return i*2 end) -- {2, 4, 6}
 
 **curry**: `_.curry(num, fn, args = {}) -> function`  
 Returns a [curried](https://drboolean.gitbooks.io/mostly-adequate-guide-old/content/ch4.html) version of `fn` that will receive `num` args.
+```lua
+plural = _.curry(2, _.plural)
+pieces = plural('pieces')
+pieces(2) -- 'pieces'
+pieces(1) -- 'piece'
+pieces(0) -- 'pieces'
+```
+
+**uncurry**: `_.uncurry(function) -> (...) -> value`  
+Returns a runner for `fn` that will run a curried function in one call.
+```lua
+add = function(x)
+    return function(y) return x + y end
+end
+_.uncurry(add)(1, 2) -- 3 
+```
+
 ```lua
 plural = _.curry(2, _.plural)
 pieces = plural('pieces')
