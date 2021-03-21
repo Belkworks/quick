@@ -126,6 +126,7 @@ U = {
     return List
   end,
   map = function(List, Fn)
+    Fn = U.iteratee(Fn)
     local _tbl_0 = { }
     for I, V in pairs(List) do
       _tbl_0[I] = Fn(V, I, List)
@@ -143,6 +144,7 @@ U = {
     return State
   end,
   find = function(List, Fn)
+    Fn = U.iteratee(Fn)
     for I, V in pairs(List) do
       if Fn(V, I, List) then
         return V
@@ -150,6 +152,7 @@ U = {
     end
   end,
   filter = function(List, Fn)
+    Fn = U.iteratee(Fn)
     local _accum_0 = { }
     local _len_0 = 1
     for I, V in pairs(List) do
@@ -171,6 +174,7 @@ U = {
     end)
   end,
   reject = function(List, Fn)
+    Fn = U.iteratee(Fn)
     local _accum_0 = { }
     local _len_0 = 1
     for I, V in pairs(List) do
@@ -182,6 +186,7 @@ U = {
     return _accum_0
   end,
   every = function(List, Fn)
+    Fn = U.iteratee(Fn)
     for I, V in pairs(List) do
       if not Fn(V, I, List) then
         return false
@@ -250,6 +255,7 @@ U = {
     return #U.values(List)
   end,
   partition = function(List, Fn)
+    Fn = U.iteratee(Fn)
     local Pass, Fail = { }, { }
     for I, V in pairs(List) do
       if Fn(V, I, List) then

@@ -68,6 +68,7 @@ U = {
 		List
 	
 	map: (List, Fn) -> -- Returns list of Fn (element)
+		Fn = U.iteratee Fn
 		{I, Fn V, I, List for I, V in pairs List}
 
 	reduce: (List, Fn, State) -> -- Reduces list to single value, state defaults to first value
@@ -79,9 +80,11 @@ U = {
 		State
 
 	find: (List, Fn) -> -- Returns first value that passes Fn
+		Fn = U.iteratee Fn
 		return V for I, V in pairs List when Fn V, I, List
 
 	filter: (List, Fn) -> -- Returns each value that passes Fn
+		Fn = U.iteratee Fn
 		[V for I, V in pairs List when Fn V, I, List]
 
 	findWhere: (List, Props) -> -- Returns first object matching properties
@@ -91,9 +94,11 @@ U = {
 		U.filter List, (O) -> U.isMatch O, Props
 
 	reject: (List, Fn) -> -- Opposite of filter, returns failed Fn
+		Fn = U.iteratee Fn
 		[V for I, V in pairs List when not Fn V, I, List]
 
 	every: (List, Fn) -> -- Returns true if every element passes Fn
+		Fn = U.iteratee Fn
 		return false for I, V in pairs List when not Fn V, I, List
 		true
 
@@ -147,6 +152,7 @@ U = {
 	size: (List) -> #U.values List -- Returns count of array/object
 
 	partition: (List, Fn) -> -- Returns list of passing values and list of failing values
+		Fn = U.iteratee Fn
 		Pass, Fail = {}, {}
 		for I, V in pairs List
 			if Fn V, I, List
