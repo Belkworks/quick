@@ -1,2 +1,3 @@
-# ignore lua
-*.lua linguist-detectable=false
+# ignore init.lua
+init.lua -linguist-detectable
+init.lua linguist-generated
