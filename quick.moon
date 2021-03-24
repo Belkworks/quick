@@ -59,12 +59,14 @@ U = {
 			Path
 		else { Path }
 
+	get: (Object, Path) ->
+		Path = U.toPath Path
+		Object = Object[v] for v in *Path
+		Object
+
 	property: (Path) ->
 		Path = U.toPath Path
-
-		(Object) ->
-			Object = Object[v] for v in *Path
-			Object
+		(Object) -> U.get Object, Path
 
 	values: (List) ->
 		enforce 'values', 'table', List

@@ -99,14 +99,18 @@ U = {
       }
     end
   end,
+  get = function(Object, Path)
+    Path = U.toPath(Path)
+    for _index_0 = 1, #Path do
+      local v = Path[_index_0]
+      Object = Object[v]
+    end
+    return Object
+  end,
   property = function(Path)
     Path = U.toPath(Path)
     return function(Object)
-      for _index_0 = 1, #Path do
-        local v = Path[_index_0]
-        Object = Object[v]
-      end
-      return Object
+      return U.get(Object, Path)
     end
   end,
   values = function(List)
