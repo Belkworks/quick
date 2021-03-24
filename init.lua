@@ -123,6 +123,61 @@ U = {
       return List
     end
   end,
+  isEqual = function(A, B, Traversed)
+    if Traversed == nil then
+      Traversed = { }
+    end
+    local tA = type(A)
+    local tB = type(B)
+    if tA ~= tB then
+      return false
+    end
+    local _exp_0 = tA
+    if 'table' == _exp_0 then
+      local checked = { }
+      for I, V in pairs(A) do
+        local _continue_0 = false
+        repeat
+          if Traversed[V] then
+            _continue_0 = true
+            break
+          end
+          Traversed[V] = true
+          if not (U.isEqual(V, B[I], Traversed)) then
+            return false
+          end
+          Traversed[V] = false
+          checked[I] = true
+          _continue_0 = true
+        until true
+        if not _continue_0 then
+          break
+        end
+      end
+      for I, V in pairs(B) do
+        local _continue_0 = false
+        repeat
+          if not (checked[I]) then
+            if Traversed[V] then
+              _continue_0 = true
+              break
+            end
+            Traversed[V] = true
+            if not (U.isEqual(V, A[I], Traversed)) then
+              return false
+            end
+          end
+          _continue_0 = true
+        until true
+        if not _continue_0 then
+          break
+        end
+      end
+      return true
+    else
+      return A == B
+    end
+  end,
   each = function(List, Fn)
     for I, V in pairs(List) do
       Fn(V, I, List)

@@ -64,6 +64,28 @@ U = {
 			Result
 		else List
 
+	isEqual: (A, B, Traversed = {}) ->
+		tA = type A
+		tB = type B
+		return false if tA != tB
+		switch tA
+			when 'table'
+				checked = {}
+				for I, V in pairs A
+					continue if Traversed[V]
+					Traversed[V] = true
+					return false unless U.isEqual V, B[I], Traversed
+					Traversed[V] = false
+					checked[I] = true
+
+				for I, V in pairs B
+					unless checked[I]
+						continue if Traversed[V]
+						Traversed[V] = true
+						return false unless U.isEqual V, A[I], Traversed
+
+				true
+			else A == B
 	-- Collections
 	each: (List, Fn) -> -- Runs Fn on each element
 		Fn V, I, List for I, V in pairs List
