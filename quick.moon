@@ -51,13 +51,13 @@ U = {
 		return List if U.isArray List
 		[V for _, V in pairs List]
 
-	softCopy: (List) -> {I, V for I, V in pairs List} -- Shallow copy of list
+	clone: (List) -> {I, V for I, V in pairs List} -- Shallow copy of list
 
-	hardCopy: (List, Explored = {}) -> -- Recursive copy of list
+	cloneDeep: (List, Explored = {}) -> -- Recursive copy of list
 		if 'table' == type List
 			return Explored[List] if Explored[List]
 			Explored[List] = true
-			Result = {U.hardCopy(I), U.hardCopy(V) for I, V in pairs List}
+			Result = {U.cloneDeep(I), U.cloneDeep(V) for I, V in pairs List}
 			Explored[List] = Result
 			Result
 		else List
@@ -126,7 +126,7 @@ U = {
 		U.map List, (V, I) -> V[Key]
 
 	shuffle: (List) -> -- Returns shuffled copy
-		List = U.softCopy U.values List
+		List = U.clone U.values List
 		Result = {}
 		while #List > 1
 			table.insert Result, table.remove List, math.random 1, #List
@@ -134,13 +134,13 @@ U = {
 		Result
 
 	sort: (List, Fn) -> -- Returns a sorted copy
-		List = U.softCopy U.values List
+		List = U.clone U.values List
 		table.sort List, Fn
 
 		List
 
 	reverse: (List) -> -- Returns a backwards copy
-		List = U.softCopy U.values List
+		List = U.clone U.values List
 		
 		Result = {}
 		while #List > 0

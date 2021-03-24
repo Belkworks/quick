@@ -89,14 +89,14 @@ U = {
     end
     return _accum_0
   end,
-  softCopy = function(List)
+  clone = function(List)
     local _tbl_0 = { }
     for I, V in pairs(List) do
       _tbl_0[I] = V
     end
     return _tbl_0
   end,
-  hardCopy = function(List, Explored)
+  cloneDeep = function(List, Explored)
     if Explored == nil then
       Explored = { }
     end
@@ -109,7 +109,7 @@ U = {
       do
         local _tbl_0 = { }
         for I, V in pairs(List) do
-          _tbl_0[U.hardCopy(I)] = U.hardCopy(V)
+          _tbl_0[U.cloneDeep(I)] = U.cloneDeep(V)
         end
         Result = _tbl_0
       end
@@ -232,7 +232,7 @@ U = {
     end)
   end,
   shuffle = function(List)
-    List = U.softCopy(U.values(List))
+    List = U.clone(U.values(List))
     local Result = { }
     while #List > 1 do
       table.insert(Result, table.remove(List, math.random(1, #List)))
@@ -241,12 +241,12 @@ U = {
     return Result
   end,
   sort = function(List, Fn)
-    List = U.softCopy(U.values(List))
+    List = U.clone(U.values(List))
     table.sort(List, Fn)
     return List
   end,
   reverse = function(List)
-    List = U.softCopy(U.values(List))
+    List = U.clone(U.values(List))
     local Result = { }
     while #List > 0 do
       table.insert(Result, table.remove(List))
