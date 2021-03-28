@@ -394,16 +394,9 @@ U = {
     local flat = U.uniq(U.flatten({
       ...
     }))
-    local _accum_0 = { }
-    local _len_0 = 1
-    for _index_0 = 1, #A do
-      local V = A[_index_0]
-      if not U.contains(flat, V) then
-        _accum_0[_len_0] = V
-        _len_0 = _len_0 + 1
-      end
-    end
-    return _accum_0
+    return U.reject(A, function(V)
+      return U.contains(flat, V)
+    end)
   end,
   shuffle = function(List)
     enforce('shuffle', 'table', List)
