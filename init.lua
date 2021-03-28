@@ -308,6 +308,21 @@ U = {
     end
     return _accum_0
   end,
+  flatten = function(A)
+    local reducer
+    reducer = function(S, V)
+      if 'table' == type(V) then
+        for _index_0 = 1, #V do
+          local B = V[_index_0]
+          table.insert(S, B)
+        end
+      else
+        table.insert(S, V)
+      end
+      return S
+    end
+    return U.reduce(A, reducer, { })
+  end,
   shuffle = function(List)
     List = U.clone(U.values(List))
     local Result = { }
