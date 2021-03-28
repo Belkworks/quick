@@ -191,6 +191,14 @@ U = {
 
     tail: (Array) ->
         [V for I, V in pairs List when I != 1]
+
+    flatten: (A) ->
+        reducer = (S, V) ->
+            if 'table' == type V
+                table.insert S, B for B in *V
+            else table.insert S, V
+            S
+        U.reduce A, reducer, {}
     shuffle: (List) -> -- Returns shuffled copy
         enforce 'shuffle', 'table', List
         List = U.clone U.values List
