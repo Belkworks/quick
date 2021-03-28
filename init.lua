@@ -354,6 +354,17 @@ U = {
       return Array[#Array + N + 1]
     end
   end,
+  tail = function(Array)
+    local _accum_0 = { }
+    local _len_0 = 1
+    for I, V in pairs(List) do
+      if I ~= 1 then
+        _accum_0[_len_0] = V
+        _len_0 = _len_0 + 1
+      end
+    end
+    return _accum_0
+  end,
   shuffle = function(List)
     enforce('shuffle', 'table', List)
     List = U.softCopy(U.values(List))

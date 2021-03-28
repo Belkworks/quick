@@ -188,6 +188,9 @@ U = {
         if N >= 0
             Array[N]
         else Array[#Array + N + 1]
+
+    tail: (Array) ->
+        [V for I, V in pairs List when I != 1]
     shuffle: (List) -> -- Returns shuffled copy
         enforce 'shuffle', 'table', List
         List = U.clone U.values List
