@@ -206,6 +206,11 @@ U = {
             table.insert S, V unless U.contains S, V
             S
         U.reduce A, reducer, {}
+
+    difference: (A, ...) ->
+        flat = U.uniq U.flatten {...}
+        [V for V in *A when not U.contains flat, V]
+
     shuffle: (List) -> -- Returns shuffled copy
         enforce 'shuffle', 'table', List
         List = U.clone U.values List
