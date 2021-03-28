@@ -380,6 +380,16 @@ U = {
     end
     return U.reduce(A, reducer, { })
   end,
+  uniq = function(A)
+    local reducer
+    reducer = function(S, V)
+      if not (U.contains(S, V)) then
+        table.insert(S, V)
+      end
+      return S
+    end
+    return U.reduce(A, reducer, { })
+  end,
   shuffle = function(List)
     enforce('shuffle', 'table', List)
     List = U.softCopy(U.values(List))
