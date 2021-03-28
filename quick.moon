@@ -149,6 +149,11 @@ U = {
     pluck: (List, Key) -> -- Returns list of each value[key]
         U.map List, (V, I) -> V[Key]
 
+    -- Arrays
+    nth: (Array, N) ->
+        if N >= 0
+            Array[N]
+        else Array[#Array + N + 1]
     shuffle: (List) -> -- Returns shuffled copy
         List = U.clone U.values List
         Result = {}

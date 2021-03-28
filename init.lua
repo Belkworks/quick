@@ -290,6 +290,13 @@ U = {
       return V[Key]
     end)
   end,
+  nth = function(Array, N)
+    if N >= 0 then
+      return Array[N]
+    else
+      return Array[#Array + N + 1]
+    end
+  end,
   shuffle = function(List)
     List = U.clone(U.values(List))
     local Result = { }
