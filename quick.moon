@@ -73,7 +73,9 @@ U = {
         return List if U.isArray List
         [V for _, V in pairs List]
 
-    clone: (List) -> {I, V for I, V in pairs List} -- Shallow copy of list
+    clone: (List) ->
+        enforce 'clone', 'table', List
+        {I, V for I, V in pairs List} -- Shallow copy of list
 
     cloneDeep: (List, Explored = {}) -> -- Recursive copy of list
         if 'table' == type List
@@ -120,7 +122,6 @@ U = {
 
     reduce: (List, Fn, State) -> -- Reduces list to single value, state defaults to first value
         enforce 'reduce', {'table', 'function'}, List, Fn
-        
         for I, V in pairs List
             State = if State == nil and I == 1 -- skip the first
                 V -- default to first value
@@ -186,14 +187,17 @@ U = {
 
     -- Arrays
     nth: (Array, N) ->
+        enforce 'nth', {'table', 'number'}, Array, N
         if N >= 0
             Array[N]
         else Array[#Array + N + 1]
 
     tail: (Array) ->
+        enforce 'tail', 'table', Array
         [V for I, V in pairs List when I != 1]
 
     flatten: (A) ->
+        enforce 'flatten', 'table', A
         reducer = (S, V) ->
             if 'table' == type V
                 table.insert S, B for B in *V
@@ -202,12 +206,14 @@ U = {
         U.reduce A, reducer, {}
 
     uniq: (A) ->
+        enforce 'uniq', 'table', A
         reducer = (S, V) ->
             table.insert S, V unless U.contains S, V
             S
         U.reduce A, reducer, {}
 
     difference: (A, ...) ->
+        enforce 'difference', 'table', A
         flat = U.uniq U.flatten {...}
         U.reject A, (V) -> U.contains flat, V
 
