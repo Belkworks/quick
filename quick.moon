@@ -175,7 +175,7 @@ U = {
 
     difference: (A, ...) ->
         flat = U.uniq U.flatten {...}
-        [V for V in *A when not U.contains flat, V]
+        U.reject A, (V) -> U.contains flat, V
 
     shuffle: (List) -> -- Returns shuffled copy
         List = U.clone U.values List
