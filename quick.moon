@@ -86,6 +86,7 @@ U = {
 
                 true
             else A == B
+
     -- Collections
     each: (List, Fn) -> -- Runs Fn on each element
         Fn V, I, List for I, V in pairs List
@@ -163,6 +164,12 @@ U = {
             if 'table' == type V
                 table.insert S, B for B in *V
             else table.insert S, V
+            S
+        U.reduce A, reducer, {}
+
+    uniq: (A) ->
+        reducer = (S, V) ->
+            table.insert S, V unless U.contains S, V
             S
         U.reduce A, reducer, {}
     shuffle: (List) -> -- Returns shuffled copy
