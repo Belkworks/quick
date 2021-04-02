@@ -769,6 +769,14 @@ if game then
     if U.Service.RunService:IsClient() then
       U.User = U.Service.Players.LocalPlayer
     end
+    U.waitFor = function(object, path, timeout)
+      return U.reduce({
+        object,
+        unpack(path)
+      }, function(o, n)
+        return o:waitForChild(n, timeout)
+      end)
+    end
   end
 end
 setmetatable(U, {

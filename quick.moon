@@ -420,6 +420,9 @@ if game
         if .Service.RunService\IsClient!
             .User = .Service.Players.LocalPlayer
 
+        .waitFor = (object, path, timeout) ->
+            U.reduce {object, unpack path}, (o, n) -> o\waitForChild n, timeout
+
 setmetatable U, __call: (Value) =>
     with Wrap = {}
         setmetatable Wrap, __index: (FnName) =>
