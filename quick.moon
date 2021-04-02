@@ -394,9 +394,10 @@ U = {
         {
             :state
             isEmpty: -> #state == 0
+            length: -> #state
             push: (v) ->
                 table.insert state, v
-                #v
+                #state
             pop: -> table.remove state
             peek: -> state[#state]
         }
@@ -405,9 +406,10 @@ U = {
         {
             :state
             isEmpty: -> #state == 0
+            length: -> #state
             push: (v) ->
                 table.insert state, v
-                #v
+                #state
             next: -> table.remove state, 1
             peek: -> state[1]
         }

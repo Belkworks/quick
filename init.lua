@@ -725,9 +725,12 @@ U = {
       isEmpty = function()
         return #state == 0
       end,
+      length = function()
+        return #state
+      end,
       push = function(v)
         table.insert(state, v)
-        return #v
+        return #state
       end,
       pop = function()
         return table.remove(state)
@@ -746,9 +749,12 @@ U = {
       isEmpty = function()
         return #state == 0
       end,
+      length = function()
+        return #state
+      end,
       push = function(v)
         table.insert(state, v)
-        return #v
+        return #state
       end,
       next = function()
         return table.remove(state, 1)
