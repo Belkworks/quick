@@ -475,6 +475,19 @@ U = {
     end
     return min + (val - min + change) % (max - min + 1)
   end,
+  max = function(List)
+    return U.reduce(List, U.ary(math.max, 2))
+  end,
+  min = function(List)
+    return U.reduce(List, U.ary(math.min, 2))
+  end,
+  clamp = function(N, Min, Max)
+    if Max then
+      return math.min(Max, math.max(Min, N))
+    else
+      return math.min(Min, N)
+    end
+  end,
   chain = function(Value)
     local Wrap = U(Value)
     local final = Value
@@ -546,6 +559,125 @@ U = {
       }, (function(s, v)
         return s(v)
       end), Fn)
+    end
+  end,
+  tap = function(V, Fn)
+    Fn(V)
+    return V
+  end,
+  thru = function(V, Fn)
+    return Fn(V)
+  end,
+  range = function(Max, Min, Step)
+    if Min == nil then
+      Min = 1
+    end
+    if Step == nil then
+      Step = 1
+    end
+    local _accum_0 = { }
+    local _len_0 = 1
+    for I = Min, Max, Step do
+      _accum_0[_len_0] = I
+      _len_0 = _len_0 + 1
+    end
+    return _accum_0
+  end,
+  nthArg = function(N)
+    if N == nil then
+      N = 1
+    end
+    return function(...)
+      return U.nth({
+        ...
+      }, N)
+    end
+  end,
+  ary = function(Fn, N)
+    if N == nil then
+      N = 1
+    end
+    return function(...)
+      return Fn(unpack(U.first({
+        ...
+      }, N)))
+    end
+  end,
+  unary = function(Fn)
+    return function(V)
+      return Fn(V)
+    end
+  end,
+  after = function(N, Fn)
+    if N == nil then
+      N = 1
+    end
+    local count = 0
+    return function(...)
+      count = count + 1
+      if count >= N then
+        return FN(...)
+      end
+    end
+  end,
+  before = function(N, Fn)
+    if N == nil then
+      N = 1
+    end
+    local Result = { }
+    return function(...)
+      if N <= 0 then
+        return unpack(Result)
+      end
+      N = N - 1
+      if N == 0 then
+        Result = {
+          Fn(...)
+        }
+        return unpack(Result)
+      else
+        return Fn(...)
+      end
+    end
+  end,
+  partial = function(Fn, ...)
+    local args = {
+      ...
+    }
+    return function(...)
+      return Fn(unpack(args), ...)
+    end
+  end,
+  partialRight = function(Fn, ...)
+    local args = {
+      ...
+    }
+    return function(...)
+      return Fn(..., unpack(args))
+    end
+  end,
+  flip = function(Fn)
+    return function(...)
+      return Fn(unpack(U.reverse({
+        ...
+      })))
+    end
+  end,
+  negate = function(Fn)
+    return function(...)
+      return not Fn(...)
+    end
+  end,
+  once = function(Fn)
+    return U.before(1, Fn)
+  end,
+  overArgs = function(Fn, Transforms)
+    return function(...)
+      return Fn(unpack(U.map({
+        ...
+      }, function(V, I)
+        return Transforms[I](V)
+      end)))
     end
   end,
   debounce = function(state)
