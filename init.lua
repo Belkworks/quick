@@ -680,6 +680,17 @@ U = {
       end)))
     end
   end,
+  combine = function(...)
+    local Fns = {
+      ...
+    }
+    return function(...)
+      for _index_0 = 1, #Fns do
+        local Fn = Fns[_index_0]
+        Fn(...)
+      end
+    end
+  end,
   debounce = function(state)
     if state == nil then
       state = false

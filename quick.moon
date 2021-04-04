@@ -368,6 +368,10 @@ U = {
     overArgs: (Fn, Transforms) -> -- Fn a, b -> Fn Transforms[1]a, Transforms[2]b
         (...) -> Fn unpack U.map {...}, (V, I) -> Transforms[I] V
 
+    combine: (...) ->
+        Fns = {...}
+        (...) -> Fn ... for Fn in *Fns
+
     -- debounce(state = false) -> (set = true) -> bool
     debounce: (state = false) ->
         (set = true) ->
