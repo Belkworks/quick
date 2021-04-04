@@ -239,7 +239,6 @@ U = {
         
         Result = {}
         while #List > 0
-
             table.insert Result, table.remove List
         
         Result
@@ -322,6 +321,17 @@ U = {
         enforce 'rr', {'number', 'number', 'number', 'number'}, val, min, max, change
         min + (val-min+change)%(max-min+1) -- round robin
 
+    max: (List) ->
+        U.reduce List, U.ary math.max, 2
+
+    min: (List) ->
+        U.reduce List, U.ary math.min, 2
+
+    clamp: (N, Min, Max) ->
+        if Max
+            math.min Max, math.max Min, N
+        else math.min Min, N
+
     -- Helper
     chain: (Value) ->
         Wrap = U Value
@@ -366,6 +376,69 @@ U = {
     debounce: (state = false) ->
         enforce 'debounce', 'boolean', state
 
+        (...) -> U.reduce {...}, ((s, v) -> s v), Fn
+
+    tap: (V, Fn) ->
+        Fn V
+        V
+
+    thru: (V, Fn) ->
+        Fn V
+
+    range: (Max, Min = 1, Step = 1) ->
+        [I for I = Min, Max, Step]
+
+    nthArg: (N = 1) ->
+        (...) -> U.nth {...}, N
+
+    ary: (Fn, N = 1) -> -- (...) -> Fn ...[1..N]
+        (...) -> Fn unpack U.first {...}, N
+
+    unary: (Fn) ->
+        (V) -> Fn V
+
+    after: (N = 1, Fn) ->
+        count = 0
+        (...) ->
+            count += 1
+            if count >= N
+                FN ...
+
+    before: (N = 1, Fn) ->
+        Result = {}
+        (...) ->
+            return unpack Result if N <= 0
+            N -= 1
+            if N == 0
+                Result = { Fn ... }
+                unpack Result
+            else Fn ...
+
+    partial: (Fn, ...) ->
+        args = {...}
+        (...) -> Fn unpack(args), ...
+
+    partialRight: (Fn, ...) ->
+        args = {...}
+        (...) -> Fn ..., unpack args
+
+    flip: (Fn) ->
+        (...) -> Fn unpack U.reverse {...}
+
+    negate: (Fn) ->
+        (...) -> not Fn ...
+
+    once: (Fn) -> U.before 1, Fn
+
+    overArgs: (Fn, Transforms) -> -- Fn a, b -> Fn Transforms[1]a, Transforms[2]b
+        (...) -> Fn unpack U.map {...}, (V, I) -> Transforms[I] V
+
+    combine: (...) ->
+        Fns = {...}
+        (...) -> Fn ... for Fn in *Fns
+
+    -- debounce(state = false) -> (set = true) -> bool
+    debounce: (state = false) ->
         (set = true) ->
             if set == false
                 state = false
@@ -389,26 +462,27 @@ U = {
         deb = U.debounce not state
         (set) -> not deb not set
 
+    -- data structures
     stack: (state = {}) ->
-        enforce 'stack', 'table', state
         {
             :state
             isEmpty: -> #state == 0
+            length: -> #state
             push: (v) ->
                 table.insert state, v
-                #v
+                #state
             pop: -> table.remove state
             peek: -> state[#state]
         }
 
     queue: (state = {}) ->
-        enforce 'queue', 'table', state
         {
             :state
             isEmpty: -> #state == 0
+            length: -> #state
             push: (v) ->
                 table.insert state, v
-                #v
+                #state
             next: -> table.remove state, 1
             peek: -> state[1]
         }
@@ -420,6 +494,9 @@ if game
         .Service = setmetatable {}, __index: (K) => game\GetService K
         if .Service.RunService\IsClient!
             .User = .Service.Players.LocalPlayer
+
+        .waitFor = (object, path, timeout) ->
+            U.reduce {object, unpack path}, (o, n) -> o\waitForChild n, timeout
 
 setmetatable U, __call: (Value) =>
     with Wrap = {}
