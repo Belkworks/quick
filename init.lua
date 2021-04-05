@@ -410,10 +410,16 @@ U = {
     return table.concat(List, Sep)
   end,
   defaults = function(Object, Properties)
-    for I in pairs(Properties) do
+    for I, V in pairs(Properties) do
       if Object[I] == nil then
-        Object[I] = Properties[I]
+        Object[I] = V
       end
+    end
+    return Object
+  end,
+  merge = function(Object, Properties)
+    for I, V in pairs(Properties) do
+      Object[I] = V
     end
     return Object
   end,
@@ -755,25 +761,15 @@ U = {
     if state == nil then
       state = { }
     end
-    return {
-      state = state,
-      isEmpty = function()
-        return #state == 0
-      end,
-      length = function()
-        return #state
-      end,
-      push = function(v)
-        table.insert(state, v)
-        return #state
-      end,
+    return U.merge(U.stack(state), {
+      pop = nil,
       next = function()
         return table.remove(state, 1)
       end,
       peek = function()
         return state[1]
       end
-    }
+    })
   end
 }
 if game then

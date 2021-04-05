@@ -226,7 +226,11 @@ U = {
 
     -- Objects
     defaults: (Object, Properties) ->
-        Object[I] = Properties[I] for I in pairs Properties when Object[I] == nil
+        Object[I] = V for I, V in pairs Properties when Object[I] == nil
+        Object
+
+    merge: (Object, Properties) ->
+        Object[I] = V for I, V in pairs Properties
         Object
 
     keys: (Object) ->
@@ -407,16 +411,10 @@ U = {
         }
 
     queue: (state = {}) ->
-        {
-            :state
-            isEmpty: -> #state == 0
-            length: -> #state
-            push: (v) ->
-                table.insert state, v
-                #state
+        U.merge U.stack(state),
+            pop: nil
             next: -> table.remove state, 1
             peek: -> state[1]
-        }
 
 }
 
