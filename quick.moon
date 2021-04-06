@@ -268,12 +268,13 @@ U = {
         Substitutions = {
             S\upper!, 'ABC', 'DEF',
             'GHI', 'JKL', 'MNO',
-            'PQRS', 'TUV','WXYZ'
+            'PQRS', 'TUV', 'WXYZ'
         }
         U.reduce Substitutions, (S, V, I) -> S\gsub '['..V..']', tostring I
 
     -- Math
-    rr: (val, min, max, change = 0) -> min + (val-min+change)%(max-min+1) -- round robin
+    rr: (val, min, max, change = 0) -> -- round robin
+        min + (val + change - min)%(max + 1 - min)
 
     add: (x, y) -> x + y
 
@@ -283,11 +284,11 @@ U = {
     average: (Array) ->
         U.sum(Array)/#Array
 
-    max: (List) ->
-        U.reduce List, U.ary math.max, 2
+    max: (Array) ->
+        U.reduce Array, U.ary math.max, 2
 
-    min: (List) ->
-        U.reduce List, U.ary math.min, 2
+    min: (Array) ->
+        U.reduce Array, U.ary math.min, 2
 
     clamp: (N, Min, Max) ->
         if Max

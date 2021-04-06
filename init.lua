@@ -494,7 +494,7 @@ U = {
     if change == nil then
       change = 0
     end
-    return min + (val - min + change) % (max - min + 1)
+    return min + (val + change - min) % (max + 1 - min)
   end,
   add = function(x, y)
     return x + y
@@ -505,11 +505,11 @@ U = {
   average = function(Array)
     return U.sum(Array) / #Array
   end,
-  max = function(List)
-    return U.reduce(List, U.ary(math.max, 2))
+  max = function(Array)
+    return U.reduce(Array, U.ary(math.max, 2))
   end,
-  min = function(List)
-    return U.reduce(List, U.ary(math.min, 2))
+  min = function(Array)
+    return U.reduce(Array, U.ary(math.min, 2))
   end,
   clamp = function(N, Min, Max)
     if Max then
