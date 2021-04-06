@@ -275,6 +275,14 @@ U = {
     -- Math
     rr: (val, min, max, change = 0) -> min + (val-min+change)%(max-min+1) -- round robin
 
+    add: (x, y) -> x + y
+
+    sum: (Array) ->
+        U.reduce Array, U.add
+
+    average: (Array) ->
+        U.sum(Array)/#Array
+
     max: (List) ->
         U.reduce List, U.ary math.max, 2
 

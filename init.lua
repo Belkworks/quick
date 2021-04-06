@@ -496,6 +496,15 @@ U = {
     end
     return min + (val - min + change) % (max - min + 1)
   end,
+  add = function(x, y)
+    return x + y
+  end,
+  sum = function(Array)
+    return U.reduce(Array, U.add)
+  end,
+  average = function(Array)
+    return U.sum(Array) / #Array
+  end,
   max = function(List)
     return U.reduce(List, U.ary(math.max, 2))
   end,
