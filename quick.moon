@@ -276,6 +276,12 @@ U = {
     rr: (val, min, max, change = 0) -> -- round robin
         min + (val + change - min)%(max + 1 - min)
 
+    isEven: (x) ->
+        x%2 == 0
+
+    isOdd: (x) ->
+        x%2 == 1
+
     add: (x, y) -> x + y
 
     sum: (Array) ->

@@ -496,6 +496,12 @@ U = {
     end
     return min + (val + change - min) % (max + 1 - min)
   end,
+  isEven = function(x)
+    return x % 2 == 0
+  end,
+  isOdd = function(x)
+    return x % 2 == 1
+  end,
   add = function(x, y)
     return x + y
   end,
