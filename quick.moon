@@ -157,72 +157,76 @@ U = {
         else Array[#Array + N + 1]
 
     tail: (Array) ->
-        [V for I, V in pairs List when I != 1]
+        [V for I, V in pairs Array when I != 1]
 
-    flatten: (A) ->
+    last: (Array, N = 1) ->
+        Len = #Array
+        [V for I, V in pairs Array when I > Len - N]
+
+    flatten: (Array) ->
         reducer = (S, V) ->
             if 'table' == type V
                 table.insert S, B for B in *V
             else table.insert S, V
             S
-        U.reduce A, reducer, {}
+        U.reduce Array, reducer, {}
 
-    uniq: (A) ->
+    uniq: (Array) ->
         reducer = (S, V) ->
             table.insert S, V unless U.contains S, V
             S
-        U.reduce A, reducer, {}
+        U.reduce Array, reducer, {}
 
-    difference: (A, ...) ->
+    difference: (Array, ...) ->
         flat = U.uniq U.flatten {...}
-        U.reject A, (V) -> U.contains flat, V
+        U.reject Array, (V) -> U.contains flat, V
 
-    shuffle: (List) -> -- Returns shuffled copy
-        List = U.clone U.values List
+    shuffle: (Array) -> -- Returns shuffled copy
+        Array = U.clone U.values Array
         Result = {}
-        while #List > 1
-            table.insert Result, table.remove List, math.random 1, #List
-        table.insert Result, List[1]
+        while #Array > 1
+            table.insert Result, table.remove Array, math.random 1, #Array
+        table.insert Result, Array[1]
         Result
 
-    sort: (List, Fn) -> -- Returns a sorted copy
-        List = U.clone U.values List
-        table.sort List, Fn
+    sort: (Array, Fn) -> -- Returns a sorted copy
+        Array = U.clone U.values Array
+        table.sort Array, Fn
 
-        List
+        Array
 
-    reverse: (List) -> -- Returns a backwards copy
-        List = U.clone U.values List
+    reverse: (Array) -> -- Returns a backwards copy
+        Array = U.clone U.values Array
         
         Result = {}
-        while #List > 0
-            table.insert Result, table.remove List
+        while #Array > 0
+            table.insert Result, table.remove Array
         
         Result
 
-    sample: (List, N = 1) -> -- Returns random sample
-        U.first U.shuffle(List), N
+    sample: (Array, N = 1) -> -- Returns random sample
+        U.first U.shuffle(Array), N
 
-    size: (List) -> #U.values List -- Returns count of array/object
+    size: (Array) -> #U.values Array -- Returns count of array/object
 
-    partition: (List, Fn) -> -- Returns list of passing values and list of failing values
+    partition: (Array, Fn) -> -- Returns list of passing values and list of failing values
         Fn = U.iteratee Fn
         Pass, Fail = {}, {}
-        for I, V in pairs List
-            if Fn V, I, List
+        for I, V in pairs Array
+            if Fn V, I, Array
                 table.insert Pass, V
             else table.insert Fail, V
 
         Pass, Fail
 
-    compact: (List) -> -- Filter out falsy values
-        U.filter List, (V) -> V
+    compact: (Array) -> -- Filter out falsy values
+        U.filter Array, (V) -> V
 
-    first: (List, N = 1) -> -- Get first N of List 
-        [V for I, V in pairs List when I <= N]
+    first: (Array, N = 1) -> -- Get first N of List 
+        [V for I, V in pairs Array when I <= N]
 
-    join: (List, Sep = '') -> -- Concat a table
-        table.concat List, Sep
+    join: (Array, Sep = '') -> -- Concat a table
+        table.concat Array, Sep
 
     -- Objects
     defaults: (Object, Properties) ->
@@ -417,6 +421,9 @@ U = {
             peek: -> state[1]
 
 }
+
+-- Aliases
+U.take = U.first
 
 if game
     with U

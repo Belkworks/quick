@@ -300,7 +300,7 @@ U = {
   tail = function(Array)
     local _accum_0 = { }
     local _len_0 = 1
-    for I, V in pairs(List) do
+    for I, V in pairs(Array) do
       if I ~= 1 then
         _accum_0[_len_0] = V
         _len_0 = _len_0 + 1
@@ -308,7 +308,22 @@ U = {
     end
     return _accum_0
   end,
-  flatten = function(A)
+  last = function(Array, N)
+    if N == nil then
+      N = 1
+    end
+    local Len = #Array
+    local _accum_0 = { }
+    local _len_0 = 1
+    for I, V in pairs(Array) do
+      if I > Len - N then
+        _accum_0[_len_0] = V
+        _len_0 = _len_0 + 1
+      end
+    end
+    return _accum_0
+  end,
+  flatten = function(Array)
     local reducer
     reducer = function(S, V)
       if 'table' == type(V) then
@@ -321,9 +336,9 @@ U = {
       end
       return S
     end
-    return U.reduce(A, reducer, { })
+    return U.reduce(Array, reducer, { })
   end,
-  uniq = function(A)
+  uniq = function(Array)
     local reducer
     reducer = function(S, V)
       if not (U.contains(S, V)) then
@@ -331,52 +346,52 @@ U = {
       end
       return S
     end
-    return U.reduce(A, reducer, { })
+    return U.reduce(Array, reducer, { })
   end,
-  difference = function(A, ...)
+  difference = function(Array, ...)
     local flat = U.uniq(U.flatten({
       ...
     }))
-    return U.reject(A, function(V)
+    return U.reject(Array, function(V)
       return U.contains(flat, V)
     end)
   end,
-  shuffle = function(List)
-    List = U.clone(U.values(List))
+  shuffle = function(Array)
+    Array = U.clone(U.values(Array))
     local Result = { }
-    while #List > 1 do
-      table.insert(Result, table.remove(List, math.random(1, #List)))
+    while #Array > 1 do
+      table.insert(Result, table.remove(Array, math.random(1, #Array)))
     end
-    table.insert(Result, List[1])
+    table.insert(Result, Array[1])
     return Result
   end,
-  sort = function(List, Fn)
-    List = U.clone(U.values(List))
-    table.sort(List, Fn)
-    return List
+  sort = function(Array, Fn)
+    Array = U.clone(U.values(Array))
+    table.sort(Array, Fn)
+    return Array
   end,
-  reverse = function(List)
-    List = U.clone(U.values(List))
+  reverse = function(Array)
+    Array = U.clone(U.values(Array))
     local Result = { }
-    while #List > 0 do
-      table.insert(Result, table.remove(List))
+    while #Array > 0 do
+      table.insert(Result, table.remove(Array))
     end
     return Result
   end,
-  sample = function(List, N)
+  sample = function(Array, N)
     if N == nil then
       N = 1
     end
-    return U.first(U.shuffle(List), N)
+    return U.first(U.shuffle(Array), N)
   end,
-  size = function(List)
-    return #U.values(List)
+  size = function(Array)
+    return #U.values(Array)
   end,
-  partition = function(List, Fn)
+  partition = function(Array, Fn)
     Fn = U.iteratee(Fn)
     local Pass, Fail = { }, { }
-    for I, V in pairs(List) do
-      if Fn(V, I, List) then
+    for I, V in pairs(Array) do
+      if Fn(V, I, Array) then
         table.insert(Pass, V)
       else
         table.insert(Fail, V)
@@ -384,18 +399,18 @@ U = {
     end
     return Pass, Fail
   end,
-  compact = function(List)
-    return U.filter(List, function(V)
+  compact = function(Array)
+    return U.filter(Array, function(V)
       return V
     end)
   end,
-  first = function(List, N)
+  first = function(Array, N)
     if N == nil then
       N = 1
     end
     local _accum_0 = { }
     local _len_0 = 1
-    for I, V in pairs(List) do
+    for I, V in pairs(Array) do
       if I <= N then
         _accum_0[_len_0] = V
         _len_0 = _len_0 + 1
@@ -403,11 +418,11 @@ U = {
     end
     return _accum_0
   end,
-  join = function(List, Sep)
+  join = function(Array, Sep)
     if Sep == nil then
       Sep = ''
     end
-    return table.concat(List, Sep)
+    return table.concat(Array, Sep)
   end,
   defaults = function(Object, Properties)
     for I, V in pairs(Properties) do
@@ -772,6 +787,7 @@ U = {
     })
   end
 }
+U.take = U.first
 if game then
   do
     U.Service = setmetatable({ }, {
