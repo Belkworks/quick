@@ -76,15 +76,11 @@ U = {
     return Object
   end,
   property = function(Path)
-    Path = U.toPath(Path)
     return function(Object)
       return U.get(Object, Path)
     end
   end,
   values = function(List)
-    if U.isArray(List) then
-      return List
-    end
     local _accum_0 = { }
     local _len_0 = 1
     for _, V in pairs(List) do

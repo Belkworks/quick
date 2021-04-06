@@ -46,11 +46,9 @@ U = {
         Object
 
     property: (Path) ->
-        Path = U.toPath Path
         (Object) -> U.get Object, Path
 
     values: (List) ->
-        return List if U.isArray List
         [V for _, V in pairs List]
 
     clone: (List) -> {I, V for I, V in pairs List} -- Shallow copy of list
