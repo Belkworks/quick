@@ -236,6 +236,32 @@ _.rr(10, 1, 10, 1) -- 1
 _.rr(8, 1, 10, 3) -- 1
 ```
 
+**sum**: `_.sum(array) -> number`  
+Returns the sum of all elements in `array`.
+```lua
+_.sum({1,2,3}) -- 6
+```
+
+**average**: `_.average(array) -> number`  
+Returns the average of all elements in `array`.
+```lua
+_.average({1,2,3}) -- 2
+```
+
+**max**: `_.max(array) -> number`  
+Returns the largest element in `array`.
+```lua
+_.max({1,2,3}) -- 3
+```
+
+**min**: `_.min(array) -> number`  
+Returns the smallest element in `array`.
+```lua
+_.min({1,2,3}) -- 1
+```
+
+
+
 ### Utilities
 
 **iteratee**: `_.iteratee(any) -> function`  
@@ -311,6 +337,64 @@ doubledReversed = doubled.value() -- {6, 4, 2}
 -- you don't need to assign each step to a variable
 double = function(v) return v*2 end
 doubledReversed = _.chain({1, 2, 3}).reverse().map(double).value() -- {6, 4, 2}
+```
+
+**unary**: `_.unary(fn) -> function(v) -> fn(v)`  
+Returns a function that calls `fn` with only the first parameter passed to it.
+```lua
+printFirst = _.unary(print)
+printFirst(3, 2, 1) -- prints 3
+```
+
+**ary**: `_.ary(n = 1, fn) ->  function`  
+Like **unary**, but you can specify how many arguments to pass.
+```lua
+printFirst = _.ary(2, print)
+printFirst(4, 5, 6) -- prints 4 5
+```
+
+**nthArg**: `_.nthArg(n = 1) -> (...) -> value?`  
+Returns a function that returns the `n`th argument passed to it.
+```lua
+getSecondArg = _.nthArg(2)
+getSecondArg(4, 5, 6) -- prints 5
+```
+
+**once**: `_.once(fn) -> (...) -> value?`  
+Returns a function that only runs `fn` once.  
+All subsequent calls return the original return value.
+```lua
+addOnce = _.once(_.add)
+addOnce(1, 2) -- 3
+addOnce(3, 4) -- 3
+```
+
+**before**: `_.before(n = 1, fn) -> (...) -> value?`  
+Like **once**, but you can specify how many times the function can be ran via `n`.
+After `n` executions it returns `fn`'s last return values.
+```lua
+addTwice = _.before(2, _.add)
+addOnce(1, 2) -- 3
+addOnce(3, 4) -- 7
+addOnce(5, 6) -- 7
+```
+
+**after**: `_.after(n = 1, fn) -> (...) -> value?`  
+The opposite of **before**.  
+Returns a function that only runs `fn` when called `n` or more times. 
+Returns `nil` until the function is executed `n` times.
+```lua
+doNothingFirst = _.after(1, _.add)
+addOnce(1, 2) -- nil
+addOnce(3, 4) -- 7
+addOnce(5, 6) -- 11
+```
+
+**combine**: `_.combine(...fns) -> function`  
+Returns a function that runs all the given functions.
+```lua
+printwarn = _.combine(print, warn)
+printwarn('hello world') -- prints and warns 'hello world'
 ```
 
 **debounce**: `_.debounce(state = false) -> (new = true) -> boolean`  
