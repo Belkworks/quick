@@ -261,7 +261,7 @@ U = {
     return nil ~= U.find(List, Fn)
   end,
   none = function(List, Fn)
-    return not U.some(List, Fn)
+    return nil == U.find(List, Fn)
   end,
   indexOf = function(List, Element)
     for I, V in pairs(List) do
@@ -647,7 +647,7 @@ U = {
     local count = 0
     return function(...)
       count = count + 1
-      if count >= N then
+      if count > N then
         return FN(...)
       end
     end

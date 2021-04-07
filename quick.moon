@@ -133,7 +133,7 @@ U = {
         nil != U.find List, Fn
 
     none: (List, Fn) -> -- Returns true if no elements pass Fn
-        return not U.some List, Fn
+        nil == U.find List, Fn
 
     indexOf: (List, Element) -> -- Returns index of Element in List
         return I for I, V in pairs List when V == Element
@@ -357,7 +357,7 @@ U = {
         count = 0
         (...) ->
             count += 1
-            if count >= N
+            if count > N
                 FN ...
 
     before: (N = 1, Fn) ->
