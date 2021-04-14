@@ -57,6 +57,14 @@ U = {
         
         Object
 
+    result: (Object, Path, Default) ->
+        R = U.get Object, Path
+        return R if R != nil
+        switch type Default
+        	when 'function'
+        		Default!
+        	else Default
+
     has: (Object, Path) ->
     	nil != U.get Object, Path
 
@@ -162,6 +170,13 @@ U = {
 
     pluck: (List, Key) -> -- Returns list of each value[key]
         U.map List, (V, I) -> V[Key]
+
+    pick: (List, Keys) -> -- Returns {list[key[0]], list[key[1]], ...}
+    	U.map Keys, (V) -> List[V]
+
+    omit: (List, Keys) -> -- Returns list without any keys in Keys
+    	Other = U.difference Keys, U.keys List
+    	U.map Other, (V) -> List[V]
 
     -- Arrays
     nth: (Array, N) ->
@@ -358,12 +373,6 @@ U = {
 
     times: (N, Fn) ->
         [Fn i for i = 1, N]
-
-    result: (Object, Key, Default) ->
-        X = Object[Key]
-        return X if X != nil
-
-        Default
 
     curry: (N, Fn, args = {}) -> -- curry Fn with N args
         (v) ->

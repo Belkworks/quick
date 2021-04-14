@@ -87,6 +87,18 @@ U = {
     end
     return Object
   end,
+  result = function(Object, Path, Default)
+    local R = U.get(Object, Path)
+    if R ~= nil then
+      return R
+    end
+    local _exp_0 = type(Default)
+    if 'function' == _exp_0 then
+      return Default()
+    else
+      return Default
+    end
+  end,
   has = function(Object, Path)
     return nil ~= U.get(Object, Path)
   end,
@@ -299,6 +311,17 @@ U = {
   pluck = function(List, Key)
     return U.map(List, function(V, I)
       return V[Key]
+    end)
+  end,
+  pick = function(List, Keys)
+    return U.map(Keys, function(V)
+      return List[V]
+    end)
+  end,
+  omit = function(List, Keys)
+    local Other = U.difference(Keys, U.keys(List))
+    return U.map(Other, function(V)
+      return List[V]
     end)
   end,
   nth = function(Array, N)
@@ -609,13 +632,6 @@ U = {
       _len_0 = _len_0 + 1
     end
     return _accum_0
-  end,
-  result = function(Object, Key, Default)
-    local X = Object[Key]
-    if X ~= nil then
-      return X
-    end
-    return Default
   end,
   curry = function(N, Fn, args)
     if args == nil then
