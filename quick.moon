@@ -35,7 +35,7 @@ U = {
         not U.isArray List
 
     isMatch: (Object, Props) -> -- Returns true if Object matches Props
-        return false for I, V in pairs Props when Object[I] ~= V
+        return false for I, V in pairs Props when Object[I] != V
         true
 
     matcher: (Props) -> -- Returns a predicate that tests Object against Props
@@ -46,10 +46,19 @@ U = {
             Path
         else { Path }
 
-    get: (Object, Path) ->
+    get: (Object, Path, Default) ->
         Path = U.toPath Path
-        Object = Object[v] for v in *Path
+        for v in *Path
+        	if type(Object) == 'table'
+        		Object = Object[v]
+        	else
+        		Object = Default
+        		break
+        
         Object
+
+    has: (Object, Path) ->
+    	nil != U.get Object, Path
 
     property: (Path) ->
         (Object) -> U.get Object, Path
@@ -145,7 +154,7 @@ U = {
         return I for I, V in pairs List when V == Element
 
     contains: (List, Element) -> -- Returns true if List has Element
-        nil ~= U.indexOf List, Element
+        nil != U.indexOf List, Element
 
     invoke: (List, Method, ...) -> -- Returns list of value[method] ...
         Args = {...}

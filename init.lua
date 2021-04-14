@@ -74,13 +74,21 @@ U = {
       }
     end
   end,
-  get = function(Object, Path)
+  get = function(Object, Path, Default)
     Path = U.toPath(Path)
     for _index_0 = 1, #Path do
       local v = Path[_index_0]
-      Object = Object[v]
+      if type(Object) == 'table' then
+        Object = Object[v]
+      else
+        Object = Default
+        break
+      end
     end
     return Object
+  end,
+  has = function(Object, Path)
+    return nil ~= U.get(Object, Path)
   end,
   property = function(Path)
     return function(Object)
