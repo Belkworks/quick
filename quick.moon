@@ -20,6 +20,12 @@ U = {
 
         return U.property Value
 
+    throwing: (Value) ->
+        Fn = U.iteratee Value
+        (...) ->
+            S, R = pcall Fn, ...
+            S and R
+
     isArray: (List) ->
         return false unless 'table' == type List
         #List == #[i for i in pairs List]
@@ -285,6 +291,14 @@ U = {
     sum: (Array) ->
         U.reduce Array, U.add
 
+    multiply: (x, y) -> x * y
+
+    product: (Array) ->
+        U.reduce Array, U.multiply
+
+    factorial: (N = 1) ->
+        U.product U.range N
+
     average: (Array) ->
         U.sum(Array)/#Array
 
@@ -301,6 +315,27 @@ U = {
 
     -- Helper
     chain: (Value) ->
+        wrapped = {}
+
+        Wrapped =
+            chain: true
+            :wrapped
+            value: ->
+                _.reduce wrapped, ((s, v) ->
+                    v.fn s, unpack v.args
+                ), Value
+
+        setmetatable Wrapped,
+            __index: (K) =>
+                V = rawget @, K
+                return V if V != nil
+                Fn = _[K]
+                assert Fn, 'invalid method in chain: ' .. tostring K
+                (...) ->
+                    table.insert wrapped, fn: Fn, args: {...}
+                    @
+
+    nowChain: (Value) ->
         Wrap = U Value
         final = Value
         Wrap.value = -> final

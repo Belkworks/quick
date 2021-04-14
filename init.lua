@@ -25,6 +25,13 @@ U = {
     end
     return U.property(Value)
   end,
+  throwing = function(Value)
+    local Fn = U.iteratee(Value)
+    return function(...)
+      local S, R = pcall(Fn, ...)
+      return S and R
+    end
+  end,
   isArray = function(List)
     if not ('table' == type(List)) then
       return false
@@ -504,6 +511,18 @@ U = {
   sum = function(Array)
     return U.reduce(Array, U.add)
   end,
+  multiply = function(x, y)
+    return x * y
+  end,
+  product = function(Array)
+    return U.reduce(Array, U.multiply)
+  end,
+  factorial = function(N)
+    if N == nil then
+      N = 1
+    end
+    return U.product(U.range(N))
+  end,
   average = function(Array)
     return U.sum(Array) / #Array
   end,
@@ -521,6 +540,37 @@ U = {
     end
   end,
   chain = function(Value)
+    local wrapped = { }
+    local Wrapped = {
+      chain = true,
+      wrapped = wrapped,
+      value = function()
+        return _.reduce(wrapped, (function(s, v)
+          return v.fn(s, unpack(v.args))
+        end), Value)
+      end
+    }
+    return setmetatable(Wrapped, {
+      __index = function(self, K)
+        local V = rawget(self, K)
+        if V ~= nil then
+          return V
+        end
+        local Fn = _[K]
+        assert(Fn, 'invalid method in chain: ' .. tostring(K))
+        return function(...)
+          table.insert(wrapped, {
+            fn = Fn,
+            args = {
+              ...
+            }
+          })
+          return self
+        end
+      end
+    })
+  end,
+  nowChain = function(Value)
     local Wrap = U(Value)
     local final = Value
     Wrap.value = function()
