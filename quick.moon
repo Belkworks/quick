@@ -435,6 +435,15 @@ U = {
             unlock: -> state = false
         }
 
+    counter: (state = 0) ->
+    	{
+    		value: -> state
+    		reset: (to = 0) -> state = to
+    		count: (amount = 1) ->
+    			state += amount
+    			state
+    	}
+
     -- debounce(state = false) -> (set = true) -> bool
     debounce: (state = false) ->
         (set = true) ->

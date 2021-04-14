@@ -789,6 +789,29 @@ U = {
       end
     }
   end,
+  counter = function(state)
+    if state == nil then
+      state = 0
+    end
+    return {
+      value = function()
+        return state
+      end,
+      reset = function(to)
+        if to == nil then
+          to = 0
+        end
+        state = to
+      end,
+      count = function(amount)
+        if amount == nil then
+          amount = 1
+        end
+        state = state + amount
+        return state
+      end
+    }
+  end,
   debounce = function(state)
     if state == nil then
       state = false
