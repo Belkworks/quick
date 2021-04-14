@@ -428,6 +428,13 @@ U = {
         Fns = {...}
         (...) -> Fn ... for Fn in *Fns
 
+    lock: (state = false) ->
+        {
+            locked: -> state == true
+            lock: -> state = true
+            unlock: -> state = false
+        }
+
     -- debounce(state = false) -> (set = true) -> bool
     debounce: (state = false) ->
         (set = true) ->

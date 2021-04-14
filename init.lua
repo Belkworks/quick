@@ -773,6 +773,22 @@ U = {
       end
     end
   end,
+  lock = function(state)
+    if state == nil then
+      state = false
+    end
+    return {
+      locked = function()
+        return state == true
+      end,
+      lock = function()
+        state = true
+      end,
+      unlock = function()
+        state = false
+      end
+    }
+  end,
   debounce = function(state)
     if state == nil then
       state = false
