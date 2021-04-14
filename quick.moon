@@ -256,6 +256,18 @@ U = {
     join: (Array, Sep = '') -> -- Concat a table
         table.concat Array, Sep
 
+    pop: (Array) ->
+    	table.remove Array
+
+    push: (Array, Value) ->
+    	table.insert Array, Value
+
+    shift: (Array) ->
+    	table.remove Array, 1
+
+    unshift: (Array, Value) ->
+    	table.insert Array, 1, Value
+
     -- Objects
     defaults: (Object, Properties) ->
         Object[I] = V for I, V in pairs Properties when Object[I] == nil

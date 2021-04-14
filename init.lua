@@ -458,6 +458,18 @@ U = {
     end
     return table.concat(Array, Sep)
   end,
+  pop = function(Array)
+    return table.remove(Array)
+  end,
+  push = function(Array, Value)
+    return table.insert(Array, Value)
+  end,
+  shift = function(Array)
+    return table.remove(Array, 1)
+  end,
+  unshift = function(Array, Value)
+    return table.insert(Array, 1, Value)
+  end,
   defaults = function(Object, Properties)
     for I, V in pairs(Properties) do
       if Object[I] == nil then
