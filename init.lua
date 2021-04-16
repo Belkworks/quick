@@ -318,7 +318,11 @@ U = {
     end
   end,
   contains = function(List, Element)
-    return nil ~= U.indexOf(List, Element)
+    for I, V in pairs(List) do
+      if V == Element then
+        return true
+      end
+    end
   end,
   invoke = function(List, Method, ...)
     local Args = {
@@ -342,8 +346,13 @@ U = {
     return _tbl_0
   end,
   omit = function(List, Keys)
-    local Other = U.difference(Keys, U.keys(List))
-    return U.pick(List, Other)
+    local Other = U.difference(U.keys(List), Keys)
+    local _tbl_0 = { }
+    for _index_0 = 1, #Other do
+      local V = Other[_index_0]
+      _tbl_0[V] = List[V]
+    end
+    return _tbl_0
   end,
   nth = function(Array, N)
     if N >= 0 then

@@ -172,7 +172,7 @@ U = {
         return I for I, V in pairs List when V == Element
 
     contains: (List, Element) -> -- Returns true if List has Element
-        nil != U.indexOf List, Element
+        return true for I, V in pairs List when V == Element
 
     invoke: (List, Method, ...) -> -- Returns list of value[method] ...
         Args = {...}
@@ -185,8 +185,8 @@ U = {
     	{V, List[V] for V in *Keys}
 
     omit: (List, Keys) -> -- Returns list without any keys in Keys
-    	Other = U.difference Keys, U.keys List
-    	U.pick List, Other
+    	Other = U.difference U.keys(List), Keys
+    	{V, List[V] for V in *Other}
 
     -- Arrays
     nth: (Array, N) ->
