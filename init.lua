@@ -996,9 +996,22 @@ U = {
         return V
       end
     })
+  end,
+  nonce = function(state)
+    if state == nil then
+      state = 0
+    end
+    return counter(state).count
+  end,
+  uniqueId = function(prefix)
+    if prefix == nil then
+      prefix = ''
+    end
+    return prefix .. U.uniqueCounter.count()
   end
 }
 U.take = U.first
+U.uniqueCounter = U.counter()
 if game then
   do
     U.Service = U.defaultdict(function(K)

@@ -559,10 +559,20 @@ U = {
                 rawset T, K, V
                 V
 
+    -- ids
+    nonce: (state = 0) ->
+        counter(state).count
+
+    uniqueId: (prefix = '') ->
+        prefix .. U.uniqueCounter.count!
+
 }
 
 -- Aliases
 U.take = U.first
+
+-- Setup
+U.uniqueCounter = U.counter!
 
 if game
     with U
@@ -571,7 +581,8 @@ if game
             .User = .Service.Players.LocalPlayer
 
         .waitFor = (object, path, timeout) ->
-            U.reduce {object, unpack path}, (o, n) -> o\waitForChild n, timeout
+            U.reduce {object, unpack path}, (o, n) ->
+                o\waitForChild n, timeout
 
 setmetatable U, __call: (Value) =>
     with Wrap = {}
