@@ -445,7 +445,10 @@ U = {
     end
     return Result
   end,
-  sample = function(Array, N)
+  sample = function(Array)
+    return Array[math.random(1, #Array)]
+  end,
+  sampleSize = function(Array, N)
     if N == nil then
       N = 1
     end

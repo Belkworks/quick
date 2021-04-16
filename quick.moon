@@ -245,7 +245,10 @@ U = {
         
         Result
 
-    sample: (Array, N = 1) -> -- Returns random sample
+    sample: (Array) -> -- returns a random element from Array
+        Array[math.random 1, #Array]
+
+    sampleSize: (Array, N = 1) -> -- Returns random sample
         U.take U.shuffle(Array), N
 
     size: (Array) -> #U.values Array -- Returns count of array/object

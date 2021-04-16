@@ -184,11 +184,18 @@ Returns a reversed copy of the input `array`.
 _.reverse({1,2,3}) -- {3, 2, 1}
 ```
 
-**sample**: `_.sample(array, N = 1) -> array`  
-Returns N elements randomly chosen from `array`.
+**sample**: `_.sample(array) -> value`  
+Returns a random element chosen from `array`.
 ```lua
-_.sample({1,2,3}) -- {2}
-_.sample({1,2,3}, 2) -- {3, 1}
+_.sample({1,2,3}) -- 2
+_.sample({1,2,3}) -- 3
+```
+
+**sampleSize**: `_.sampleSize(array, N = 1) -> array`  
+Returns `N` elements randomly chosen from `array`.
+```lua
+_.sampleSize({1,2,3}) -- {2}
+_.sampleSize({1,2,3}, 2) -- {3, 1}
 ```
 
 **compact**: `_.compact(array) -> array`  
