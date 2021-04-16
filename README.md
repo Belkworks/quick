@@ -157,6 +157,19 @@ _.result({a=1, b=3}, 'b', 4) -- 3
 _.result({a=1, b=3}, 'c', 4) -- 4
 ```
 
+**pick**: `_.pick(list, keys) -> list`  
+Returns a selection of `list` based on `keys`.  
+```lua
+_.pick({a=1,b=2,c=3}, {'a', 'c'}) -- {a=1, c=3}
+```
+
+**omit**: `_.omit(list, keys) -> list`  
+Like **pick**, but selects keys that are not in `keys`.  
+Slower than **pick**
+```lua
+_.pick({a=1,b=2,c=3}, {'a', 'c'}) -- {b=2}
+```
+
 ### Arrays
 
 **shuffle**: `_.shuffle(array) -> array`  
@@ -192,6 +205,12 @@ _.join({1, 2, 3}, ' ') -- '1 2 3'
 _.join({1, 2, 3}, ', ') -- '1, 2, 3'
 ```
 
+**uniq**: `_.uniq(array) -> array)`  
+Returns an array containing no duplicates.  
+```lua
+_.uniq({1,2,3,1,2}) -- {1, 2, 3}
+```
+
 ### Strings
 
 **plural**: `_.plural(str, num) -> string`  
@@ -202,11 +221,22 @@ _.plural('piece', 1) -- 'piece'
 _.plural('piece', 0) -- 'pieces'
 ```
 
-**capFirst**: `_.capFirst(str) -> string`  
+**upperFirst**: `_.upperFirst(str) -> string`  
 Returns `str` but with the first letter capitalized.
 ```lua
-_.capFirst('apple') -- 'Apple'
+_.upperFirst('apple') -- 'Apple'
 ```
+
+**lowerFirst**: Like **upperFirst** but lowercase  
+**capitalize**: Like **upperFirst** but the rest of the string is lowercase  
+
+**startsWith**: `_.startsWith(str, target) -> boolean`  
+Returns `true` if `str` starts with `target`
+```lua
+_.startsWith('test123', '123') -- true
+```
+
+**endsWith**: Like **startsWith**, but checks at the end.  
 
 **stringify**: `_.stringify(value) -> string`  
 Turns any value into a readable string.
@@ -248,6 +278,18 @@ Returns the average of all elements in `array`.
 _.average({1,2,3}) -- 2
 ```
 
+**product**: `_.product(array) -> number`  
+Returns the product of all elements in `array`.
+```lua
+_.product({1,2,3}) -- 6
+```
+
+**factorial**: `_.factorial(num) -> number`  
+Returns the factorial of `num`.
+```lua
+_.factorial(3) -- 6
+```
+
 **max**: `_.max(array) -> number`  
 Returns the largest element in `array`.
 ```lua
@@ -263,6 +305,21 @@ _.min({1,2,3}) -- 1
 
 
 ### Utilities
+
+**chain**: `_.chain(value) -> object`  
+Allows fluent method chaining on a value.  
+Each subsequent call is wrapped in a new `chain`.  
+Use the `.value()` function to get the value from a chain.
+```lua
+list = _.chain({1, 2, 3})
+reversed = list.reverse()
+doubled = reversed.map(function(v) return v*2 end)
+doubledReversed = doubled.value() -- {6, 4, 2}
+
+-- you don't need to assign each step to a variable
+double = function(v) return v*2 end
+doubledReversed = _.chain({1, 2, 3}).reverse().map(double).value() -- {6, 4, 2}
+```
 
 **iteratee**: `_.iteratee(any) -> function`  
 Returns a function based on the input type of `any`.  
@@ -305,6 +362,12 @@ Returns the results of those calls as an array.
 _.times(3, function(i) return i*2 end) -- {2, 4, 6}
 ```
 
+**range**: `_.range(max, min = 1, step = 1) -> array`  
+Returns an array of numbers from `min` to `max`
+```lua
+_.range(3) -- {1, 2, 3}
+```
+
 **curry**: `_.curry(num, fn, args = {}) -> function`  
 Returns a [curried](https://drboolean.gitbooks.io/mostly-adequate-guide-old/content/ch4.html) version of `fn` that will receive `num` args.
 ```lua
@@ -322,21 +385,6 @@ add = function(x)
     return function(y) return x + y end
 end
 _.uncurry(add)(1, 2) -- 3 
-```
-
-**chain**: `_.chain(value) -> object`  
-Allows fluent method chaining on a value.  
-Each subsequent call is wrapped in a new `chain`.  
-Use the `.value()` function to get the value from a chain.
-```lua
-list = _.chain({1, 2, 3})
-reversed = list.reverse()
-doubled = reversed.map(function(v) return v*2 end)
-doubledReversed = doubled.value() -- {6, 4, 2}
-
--- you don't need to assign each step to a variable
-double = function(v) return v*2 end
-doubledReversed = _.chain({1, 2, 3}).reverse().map(double).value() -- {6, 4, 2}
 ```
 
 **unary**: `_.unary(fn) -> function(v) -> fn(v)`  
@@ -448,6 +496,36 @@ down(true) -- false
 ```
 
 ### Data Structures
+
+**counter**: `_.counter(count = 0) -> Counter`  
+Returns a Counter that starts at `count`.  
+Counter has the following methods:  
+`value() -> number`: Returns the current count.  
+`reset(to = 0) -> nil`: Sets the counter to `to`.  
+`count(amount = 1) -> number`: Increments count by `amount`, returns new count.
+```lua
+counter = _.counter()
+counter.count() -- 1
+counter.value() -- 1
+counter.count(2) -- 3
+counter.reset()
+counter.value() -- 0
+```
+
+**lock**: `_.lock(state = false) -> Lock`  
+Returns a Lock that starts at `state`.  
+Similar in usage to **debounce**.  
+Lock has the following methods:  
+`locked() -> boolean`: Returns if the lock is set.  
+`unlock() -> nil`: Unlocks the lock.  
+`lock()`: Locks the lock.
+```lua
+locker = _.lock()
+locker.lock()
+locker.locked() -- true
+locker.unlock()
+locker.locked() -- false
+```
 
 **stack**: `_.stack(state = {}) -> Stack`  
 Returns a Stack that starts at `state`.  
