@@ -372,7 +372,7 @@ U = {
     end
     return _accum_0
   end,
-  last = function(Array, N)
+  takeRight = function(Array, N)
     if N == nil then
       N = 1
     end
@@ -386,6 +386,9 @@ U = {
       end
     end
     return _accum_0
+  end,
+  last = function(Array)
+    return Array[#Array]
   end,
   flatten = function(Array)
     local reducer
@@ -446,7 +449,7 @@ U = {
     if N == nil then
       N = 1
     end
-    return U.first(U.shuffle(Array), N)
+    return U.take(U.shuffle(Array), N)
   end,
   size = function(Array)
     return #U.values(Array)
@@ -468,7 +471,7 @@ U = {
       return V
     end)
   end,
-  first = function(Array, N)
+  take = function(Array, N)
     if N == nil then
       N = 1
     end
@@ -481,6 +484,9 @@ U = {
       end
     end
     return _accum_0
+  end,
+  first = function(Array)
+    return Array[1]
   end,
   join = function(Array, Sep)
     if Sep == nil then
@@ -770,7 +776,7 @@ U = {
       N = 1
     end
     return function(...)
-      return Fn(unpack(U.first({
+      return Fn(unpack(U.take({
         ...
       }, N)))
     end
@@ -1010,7 +1016,9 @@ U = {
     return prefix .. U.uniqueCounter.count()
   end
 }
-U.take = U.first
+U.head = U.first
+U.car = U.first
+U.cdr = U.tail
 U.uniqueCounter = U.counter()
 if game then
   do

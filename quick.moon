@@ -197,9 +197,12 @@ U = {
     tail: (Array) ->
         [V for I, V in pairs Array when I != 1]
 
-    last: (Array, N = 1) ->
+    takeRight: (Array, N = 1) ->
         Len = #Array
         [V for I, V in pairs Array when I > Len - N]
+
+    last: (Array) ->
+        Array[#Array]
 
     flatten: (Array) ->
         reducer = (S, V) ->
@@ -243,7 +246,7 @@ U = {
         Result
 
     sample: (Array, N = 1) -> -- Returns random sample
-        U.first U.shuffle(Array), N
+        U.take U.shuffle(Array), N
 
     size: (Array) -> #U.values Array -- Returns count of array/object
 
@@ -260,8 +263,11 @@ U = {
     compact: (Array) -> -- Filter out falsy values
         U.filter Array, (V) -> V
 
-    first: (Array, N = 1) -> -- Get first N of List 
+    take: (Array, N = 1) -> -- Get first N of List 
         [V for I, V in pairs Array when I <= N]
+
+    first: (Array) ->
+        Array[1]
 
     join: (Array, Sep = '') -> -- Concat a table
         table.concat Array, Sep
@@ -443,7 +449,7 @@ U = {
         (...) -> U.nth {...}, N
 
     ary: (Fn, N = 1) -> -- (...) -> Fn ...[1..N]
-        (...) -> Fn unpack U.first {...}, N
+        (...) -> Fn unpack U.take {...}, N
 
     unary: (Fn) ->
         (V) -> Fn V
@@ -569,7 +575,9 @@ U = {
 }
 
 -- Aliases
-U.take = U.first
+U.head = U.first
+U.car = U.first
+U.cdr = U.tail
 
 -- Setup
 U.uniqueCounter = U.counter!
