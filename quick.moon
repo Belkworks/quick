@@ -34,8 +34,18 @@ U = {
         return false unless 'table' == type List
         not U.isArray List
 
-    isMatch: (Object, Props) -> -- Returns true if Object matches Props
-        return false for I, V in pairs Props when Object[I] != V
+    isMatch: (Object, Props, Explored = {}) -> -- Returns true if Object matches Props
+        for I, V in pairs Props -- TODO: cleanup
+            if 'table' == type V
+                O = Object[I]
+                return false unless 'table' == type O
+                R = Explored[V]
+                return R if R != nil
+                Explored[V] = true
+                R = U.isMatch O, V, Explored
+                return false unless R
+                Explored[V] = R
+            else return false if Object[I] != V
         true
 
     matcher: (Props) -> -- Returns a predicate that tests Object against Props

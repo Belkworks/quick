@@ -52,10 +52,30 @@ U = {
     end
     return not U.isArray(List)
   end,
-  isMatch = function(Object, Props)
+  isMatch = function(Object, Props, Explored)
+    if Explored == nil then
+      Explored = { }
+    end
     for I, V in pairs(Props) do
-      if Object[I] ~= V then
-        return false
+      if 'table' == type(V) then
+        local O = Object[I]
+        if not ('table' == type(O)) then
+          return false
+        end
+        local R = Explored[V]
+        if R ~= nil then
+          return R
+        end
+        Explored[V] = true
+        R = U.isMatch(O, V, Explored)
+        if not (R) then
+          return false
+        end
+        Explored[V] = R
+      else
+        if Object[I] ~= V then
+          return false
+        end
       end
     end
     return true

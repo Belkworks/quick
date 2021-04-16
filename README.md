@@ -340,7 +340,7 @@ _.property({'a','b'})({a={b=2}}) -- 2
 
 **isMatch**: `_.isMatch(object, props) -> boolean`  
 Returns `true` if `object` meets all properties in `props`.  
-Does not recurse (yet)
+Supports nested tables.
 ```lua
 _.isMatch({a=1}, {a=1,b=2}) -- true
 _.isMatch({a=1,b={1}}, {a=1,b={1}}) -- false (doesnt recurse yet)
@@ -349,7 +349,6 @@ _.isMatch({a=1,b={1}}, {a=1,b={1}}) -- false (doesnt recurse yet)
 **matcher**: `_.matcher(props) -> (object) -> boolean`  
 Returns a function that returns `true` if `object` meets all properties in `props`.  
 Uses `_.isMatch` internally.  
-Does not recurse (yet)
 ```lua
 _.matcher({a=1})({a=1,b=2}) -- true
 _.matcher({a=1,b={1}})({a=1,b={1}}) -- false (doesnt recurse yet)
