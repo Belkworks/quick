@@ -566,7 +566,7 @@ U.take = U.first
 
 if game
     with U
-        .Service = setmetatable {}, __index: (K) => game\GetService K
+        .Service = .defaultdict (K) -> game\GetService K
         if .Service.RunService\IsClient!
             .User = .Service.Players.LocalPlayer
 

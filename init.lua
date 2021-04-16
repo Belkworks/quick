@@ -992,11 +992,9 @@ U = {
 U.take = U.first
 if game then
   do
-    U.Service = setmetatable({ }, {
-      __index = function(self, K)
-        return game:GetService(K)
-      end
-    })
+    U.Service = U.defaultdict(function(K)
+      return game:GetService(K)
+    end)
     if U.Service.RunService:IsClient() then
       U.User = U.Service.Players.LocalPlayer
     end
