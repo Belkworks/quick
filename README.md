@@ -343,7 +343,7 @@ Returns `true` if `object` meets all properties in `props`.
 Supports nested tables.
 ```lua
 _.isMatch({a=1}, {a=1,b=2}) -- true
-_.isMatch({a=1,b={1}}, {a=1,b={1}}) -- false (doesnt recurse yet)
+_.isMatch({a=1,b={1}}, {a=1,b={1}}) -- true
 ```
 
 **matcher**: `_.matcher(props) -> (object) -> boolean`  
@@ -351,7 +351,7 @@ Returns a function that returns `true` if `object` meets all properties in `prop
 Uses `_.isMatch` internally.  
 ```lua
 _.matcher({a=1})({a=1,b=2}) -- true
-_.matcher({a=1,b={1}})({a=1,b={1}}) -- false (doesnt recurse yet)
+_.matcher({a=1,b={1}})({a=1,b={1}}) -- true
 ```
 
 **times**: `_.times(num, fn) -> array`  
@@ -417,7 +417,7 @@ addOnce(3, 4) -- 3
 ```
 
 **before**: `_.before(n = 1, fn) -> (...) -> value?`  
-Like **once**, but you can specify how many times the function can be ran via `n`.
+Like **once**, but you can specify how many times the function can be ran via `n`.  
 After `n` executions it returns `fn`'s last return values.
 ```lua
 addTwice = _.before(2, _.add)
@@ -428,7 +428,7 @@ addOnce(5, 6) -- 7
 
 **after**: `_.after(n = 1, fn) -> (...) -> value?`  
 The opposite of **before**.  
-Returns a function that only runs `fn` when called `n` or more times. 
+Returns a function that only runs `fn` when called `n` or more times.  
 Returns `nil` until the function is executed `n` times.
 ```lua
 doNothingFirst = _.after(1, _.add)
@@ -448,7 +448,7 @@ printwarn('hello world') -- prints and warns 'hello world'
 Create a debouncer with a predetermined `state`.  
 Returns a function that takes a parameter, `new`, which will set the internal state.  
 Call the debounce with `false` to clear the state.  
-Otherwise, a truthy value will set the state.
+Otherwise, a truthy value will set the state.  
 Returns `true` if the debouncer was already set.
 ```lua
 deb = _.debounce()
@@ -495,6 +495,25 @@ down(true) -- false
 ```
 
 ### Data Structures
+
+**defaultdict**: `_.defaultdict(getter, state = {}) -> defaultdict`  
+Returns `state`, with a index hook that defaults values to `getter`.
+```lua
+startAtOne = _.defaultDict(1)
+print(startAtOne.test) -- 1
+startAtOne.test = 0
+print(startAtOne.test) -- 0
+startAtone.test = nil
+print(startAtOne.test) -- 1
+```
+If `getter` is a function, it will be called when filling a value.  
+`getter` will receive `(key, state)` as its parameters.
+```lua
+capKey = _.defaultDict(_.capitalize)
+print(capKey.jeff) -- 'Jeff'
+capKey.jeff = 123
+print(capKey.jeff) -- 123
+```
 
 **counter**: `_.counter(count = 0) -> Counter`  
 Returns a Counter that starts at `count`.  

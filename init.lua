@@ -966,6 +966,27 @@ U = {
         return state[1]
       end
     })
+  end,
+  defaultdict = function(Getter, State)
+    if State == nil then
+      State = { }
+    end
+    local isFunction = 'function' == type(Getter)
+    return setmetatable(State, {
+      __index = function(T, K)
+        local V = rawget(T, K)
+        if V ~= nil then
+          return V
+        end
+        if isFunction then
+          V = Getter(K, T)
+        else
+          V = Getter
+        end
+        rawset(T, K, V)
+        return V
+      end
+    })
   end
 }
 U.take = U.first

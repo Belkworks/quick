@@ -544,6 +544,21 @@ U = {
             next: -> table.remove state, 1
             peek: -> state[1]
 
+    defaultdict: (Getter, State = {}) ->
+        isFunction = 'function' == type Getter
+
+        setmetatable State,
+            __index: (T, K) ->
+                V = rawget T, K
+                return V if V != nil
+                
+                V = if isFunction
+                    Getter K, T
+                else Getter
+
+                rawset T, K, V
+                V
+
 }
 
 -- Aliases
