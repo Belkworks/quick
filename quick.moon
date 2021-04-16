@@ -188,14 +188,30 @@ U = {
     	Other = U.difference U.keys(List), Keys
     	{V, List[V] for V in *Other}
 
+    toPairs: (List) ->
+        [{K, V} for K, V in pairs List]
+
     -- Arrays
+    fromPairs: (Array) ->
+        {P[1], P[2] for P in *Array}
+
     nth: (Array, N) ->
         if N >= 0
             Array[N]
         else Array[#Array + N + 1]
 
+    first: (Array) ->
+        Array[1]
+
+    initial: (Array) ->
+        Len = #Array
+        [V for I, V in pairs Array when I != Len]
+
     tail: (Array) ->
         [V for I, V in pairs Array when I != 1]
+
+    take: (Array, N = 1) -> -- Get first N of List 
+        [V for I, V in pairs Array when I <= N]
 
     takeRight: (Array, N = 1) ->
         Len = #Array
@@ -265,12 +281,6 @@ U = {
 
     compact: (Array) -> -- Filter out falsy values
         U.filter Array, (V) -> V
-
-    take: (Array, N = 1) -> -- Get first N of List 
-        [V for I, V in pairs Array when I <= N]
-
-    first: (Array) ->
-        Array[1]
 
     join: (Array, Sep = '') -> -- Concat a table
         table.concat Array, Sep

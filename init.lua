@@ -354,6 +354,26 @@ U = {
     end
     return _tbl_0
   end,
+  toPairs = function(List)
+    local _accum_0 = { }
+    local _len_0 = 1
+    for K, V in pairs(List) do
+      _accum_0[_len_0] = {
+        K,
+        V
+      }
+      _len_0 = _len_0 + 1
+    end
+    return _accum_0
+  end,
+  fromPairs = function(Array)
+    local _tbl_0 = { }
+    for _index_0 = 1, #Array do
+      local P = Array[_index_0]
+      _tbl_0[P[1]] = P[2]
+    end
+    return _tbl_0
+  end,
   nth = function(Array, N)
     if N >= 0 then
       return Array[N]
@@ -361,11 +381,40 @@ U = {
       return Array[#Array + N + 1]
     end
   end,
+  first = function(Array)
+    return Array[1]
+  end,
+  initial = function(Array)
+    local Len = #Array
+    local _accum_0 = { }
+    local _len_0 = 1
+    for I, V in pairs(Array) do
+      if I ~= Len then
+        _accum_0[_len_0] = V
+        _len_0 = _len_0 + 1
+      end
+    end
+    return _accum_0
+  end,
   tail = function(Array)
     local _accum_0 = { }
     local _len_0 = 1
     for I, V in pairs(Array) do
       if I ~= 1 then
+        _accum_0[_len_0] = V
+        _len_0 = _len_0 + 1
+      end
+    end
+    return _accum_0
+  end,
+  take = function(Array, N)
+    if N == nil then
+      N = 1
+    end
+    local _accum_0 = { }
+    local _len_0 = 1
+    for I, V in pairs(Array) do
+      if I <= N then
         _accum_0[_len_0] = V
         _len_0 = _len_0 + 1
       end
@@ -473,23 +522,6 @@ U = {
     return U.filter(Array, function(V)
       return V
     end)
-  end,
-  take = function(Array, N)
-    if N == nil then
-      N = 1
-    end
-    local _accum_0 = { }
-    local _len_0 = 1
-    for I, V in pairs(Array) do
-      if I <= N then
-        _accum_0[_len_0] = V
-        _len_0 = _len_0 + 1
-      end
-    end
-    return _accum_0
-  end,
-  first = function(Array)
-    return Array[1]
   end,
   join = function(Array, Sep)
     if Sep == nil then
