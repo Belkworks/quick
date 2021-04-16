@@ -172,11 +172,11 @@ U = {
         U.map List, (V, I) -> V[Key]
 
     pick: (List, Keys) -> -- Returns {list[key[0]], list[key[1]], ...}
-    	U.map Keys, (V) -> List[V]
+    	{V, List[V] for V in *Keys}
 
     omit: (List, Keys) -> -- Returns list without any keys in Keys
     	Other = U.difference Keys, U.keys List
-    	U.map Other, (V) -> List[V]
+    	U.pick List, Other
 
     -- Arrays
     nth: (Array, N) ->
@@ -284,22 +284,42 @@ U = {
     plural: (S, N) ->
         S .. (N == 1 and '' or 's')
 
-    capFirst: (S) ->
+    lower: (S) ->
+        S\lower!
+
+    lowerFirst: (S) ->
+        S\sub(1,1)\lower! .. S\sub 2
+
+    upper: (S) ->
+        S\upper!
+
+    upperFirst: (S) ->
         S\sub(1,1)\upper! .. S\sub 2
+
+    capitalize: (S) ->
+        S\sub(1,1)\upper! .. S\sub(2)\lower!
+
+    startsWith: (S, T) ->
+        T == S\sub 1, #T
+
+    endsWith: (S, T) ->
+        T == S\sub #S - #T + 1
+
+    repeat: (S, N = 1) ->
+        S\rep N
 
     stringify: (A) ->
         switch type A
             when 'table'
-                s = ''
+                s = nil
                 a, z = if U.isArray A
-                    s = U.join U.map(A, U.stringify), ', '
+                    s = U.map A, U.stringify
                     '[', ']'
                 else
-
-                    s = U.join U.map(A, (v, i) -> U.stringify(i).. ': '..U.stringify v), ', '
+                    s = U.values U.map A, (v, i) -> U.stringify(i).. ': '..U.stringify v
                     '{', '}'
                 
-                a .. s .. z
+                a .. U.join(s, ', ') .. z
             when 'string'
                 '"' .. A .. '\"'
             else tostring A
@@ -458,22 +478,6 @@ U = {
         Fns = {...}
         (...) -> Fn ... for Fn in *Fns
 
-    lock: (state = false) ->
-        {
-            locked: -> state == true
-            lock: -> state = true
-            unlock: -> state = false
-        }
-
-    counter: (state = 0) ->
-    	{
-    		value: -> state
-    		reset: (to = 0) -> state = to
-    		count: (amount = 1) ->
-    			state += amount
-    			state
-    	}
-
     -- debounce(state = false) -> (set = true) -> bool
     debounce: (state = false) ->
         (set = true) ->
@@ -496,6 +500,22 @@ U = {
         (set) -> not deb not set
 
     -- data structures
+    lock: (state = false) ->
+        {
+            locked: -> state == true
+            lock: -> state = true
+            unlock: -> state = false
+        }
+
+    counter: (state = 0) ->
+        {
+            value: -> state
+            reset: (to = 0) -> state = to
+            count: (amount = 1) ->
+                state += amount
+                state
+        }
+
     stack: (state = {}) ->
         {
             :state

@@ -314,15 +314,16 @@ U = {
     end)
   end,
   pick = function(List, Keys)
-    return U.map(Keys, function(V)
-      return List[V]
-    end)
+    local _tbl_0 = { }
+    for _index_0 = 1, #Keys do
+      local V = Keys[_index_0]
+      _tbl_0[V] = List[V]
+    end
+    return _tbl_0
   end,
   omit = function(List, Keys)
     local Other = U.difference(Keys, U.keys(List))
-    return U.map(Other, function(V)
-      return List[V]
-    end)
+    return U.pick(List, Other)
   end,
   nth = function(Array, N)
     if N >= 0 then
@@ -496,24 +497,48 @@ U = {
   plural = function(S, N)
     return S .. (N == 1 and '' or 's')
   end,
-  capFirst = function(S)
+  lower = function(S)
+    return S:lower()
+  end,
+  lowerFirst = function(S)
+    return S:sub(1, 1):lower() .. S:sub(2)
+  end,
+  upper = function(S)
+    return S:upper()
+  end,
+  upperFirst = function(S)
     return S:sub(1, 1):upper() .. S:sub(2)
+  end,
+  capitalize = function(S)
+    return S:sub(1, 1):upper() .. S:sub(2):lower()
+  end,
+  startsWith = function(S, T)
+    return T == S:sub(1, #T)
+  end,
+  endsWith = function(S, T)
+    return T == S:sub(#S - #T + 1)
+  end,
+  ["repeat"] = function(S, N)
+    if N == nil then
+      N = 1
+    end
+    return S:rep(N)
   end,
   stringify = function(A)
     local _exp_0 = type(A)
     if 'table' == _exp_0 then
-      local s = ''
+      local s = nil
       local a, z
       if U.isArray(A) then
-        s = U.join(U.map(A, U.stringify), ', ')
+        s = U.map(A, U.stringify)
         a, z = '[', ']'
       else
-        s = U.join(U.map(A, function(v, i)
+        s = U.values(U.map(A, function(v, i)
           return U.stringify(i) .. ': ' .. U.stringify(v)
-        end), ', ')
+        end))
         a, z = '{', '}'
       end
-      return a .. s .. z
+      return a .. U.join(s, ', ') .. z
     elseif 'string' == _exp_0 then
       return '"' .. A .. '\"'
     else
@@ -809,6 +834,42 @@ U = {
       end
     end
   end,
+  debounce = function(state)
+    if state == nil then
+      state = false
+    end
+    return function(set)
+      if set == nil then
+        set = true
+      end
+      if set == false then
+        state = false
+      elseif state then
+        return true
+      else
+        state = true
+      end
+      return not state
+    end
+  end,
+  rising = function(state)
+    if state == nil then
+      state = false
+    end
+    local deb = U.debounce(state)
+    return function(set)
+      return not deb(set)
+    end
+  end,
+  falling = function(state)
+    if state == nil then
+      state = true
+    end
+    local deb = U.debounce(not state)
+    return function(set)
+      return not deb(not set)
+    end
+  end,
   lock = function(state)
     if state == nil then
       state = false
@@ -847,42 +908,6 @@ U = {
         return state
       end
     }
-  end,
-  debounce = function(state)
-    if state == nil then
-      state = false
-    end
-    return function(set)
-      if set == nil then
-        set = true
-      end
-      if set == false then
-        state = false
-      elseif state then
-        return true
-      else
-        state = true
-      end
-      return not state
-    end
-  end,
-  rising = function(state)
-    if state == nil then
-      state = false
-    end
-    local deb = U.debounce(state)
-    return function(set)
-      return not deb(set)
-    end
-  end,
-  falling = function(state)
-    if state == nil then
-      state = true
-    end
-    local deb = U.debounce(not state)
-    return function(set)
-      return not deb(not set)
-    end
   end,
   stack = function(state)
     if state == nil then
