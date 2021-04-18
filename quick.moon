@@ -612,6 +612,8 @@ if game
             if properties
                 U.merge object, properties
 
+            object
+
 setmetatable U, __call: (Value) =>
     with Wrap = {}
         setmetatable Wrap, __index: (FnName) =>

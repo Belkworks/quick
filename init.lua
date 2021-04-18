@@ -1076,8 +1076,9 @@ if game then
         object = Instance.new(object)
       end
       if properties then
-        return U.merge(object, properties)
+        U.merge(object, properties)
       end
+      return object
     end
   end
 end
