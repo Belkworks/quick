@@ -605,6 +605,13 @@ if game
             U.reduce {object, unpack path}, (o, n) ->
                 o\waitForChild n, timeout
 
+        .Instance = (object, properties) ->
+            if 'string' == type object
+                object = Instance.new object
+
+            if properties
+                U.merge object, properties
+
 setmetatable U, __call: (Value) =>
     with Wrap = {}
         setmetatable Wrap, __index: (FnName) =>

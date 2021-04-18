@@ -1071,6 +1071,14 @@ if game then
         return o:waitForChild(n, timeout)
       end)
     end
+    U.Instance = function(object, properties)
+      if 'string' == type(object) then
+        object = Instance.new(object)
+      end
+      if properties then
+        return U.merge(object, properties)
+      end
+    end
   end
 end
 setmetatable(U, {
