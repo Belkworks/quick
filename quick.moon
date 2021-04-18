@@ -406,7 +406,7 @@ U = {
             chain: true
             :wrapped
             value: ->
-                _.reduce wrapped, ((s, v) ->
+                U.reduce wrapped, ((s, v) ->
                     v.fn s, unpack v.args
                 ), Value
 

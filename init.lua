@@ -683,7 +683,7 @@ U = {
       chain = true,
       wrapped = wrapped,
       value = function()
-        return _.reduce(wrapped, (function(s, v)
+        return U.reduce(wrapped, (function(s, v)
           return v.fn(s, unpack(v.args))
         end), Value)
       end
