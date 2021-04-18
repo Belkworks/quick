@@ -694,7 +694,7 @@ U = {
         if V ~= nil then
           return V
         end
-        local Fn = _[K]
+        local Fn = U[K]
         assert(Fn, 'invalid method in chain: ' .. tostring(K))
         return function(...)
           table.insert(wrapped, {
@@ -722,7 +722,7 @@ U = {
           local fn = old(Wrap, FnName)
           if fn then
             return function(...)
-              return U.chain(fn(...))
+              return U.nowChain(fn(...))
             end
           else
             return error('failed to find ' .. FnName)

@@ -414,7 +414,7 @@ U = {
             __index: (K) =>
                 V = rawget @, K
                 return V if V != nil
-                Fn = _[K]
+                Fn = U[K]
                 assert Fn, 'invalid method in chain: ' .. tostring K
                 (...) ->
                     table.insert wrapped, fn: Fn, args: {...}
@@ -429,7 +429,7 @@ U = {
         old = m.__index
         setmetatable Wrap, __index: (FnName) =>
             if fn = old Wrap, FnName
-                (...) -> return U.chain fn ...
+                (...) -> return U.nowChain fn ...
             else error 'failed to find ' .. FnName
 
     times: (N, Fn) ->
