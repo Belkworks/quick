@@ -649,6 +649,10 @@ U = {
   sum = function(Array)
     return U.reduce(Array, U.add)
   end,
+  sumBy = function(Array, Fn)
+    Fn = U.iteratee(Fn)
+    return U.sum(U.map(Array, Fn))
+  end,
   multiply = function(x, y)
     return x * y
   end,

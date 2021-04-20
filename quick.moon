@@ -59,11 +59,11 @@ U = {
     get: (Object, Path, Default) ->
         Path = U.toPath Path
         for v in *Path
-        	if type(Object) == 'table'
-        		Object = Object[v]
-        	else
-        		Object = Default
-        		break
+            if type(Object) == 'table'
+                Object = Object[v]
+            else
+                Object = Default
+                break
         
         Object
 
@@ -71,12 +71,12 @@ U = {
         R = U.get Object, Path
         return R if R != nil
         switch type Default
-        	when 'function'
-        		Default!
-        	else Default
+            when 'function'
+                Default!
+            else Default
 
     has: (Object, Path) ->
-    	nil != U.get Object, Path
+        nil != U.get Object, Path
 
     property: (Path) ->
         (Object) -> U.get Object, Path
@@ -182,11 +182,11 @@ U = {
         U.map List, (V, I) -> V[Key]
 
     pick: (List, Keys) -> -- Returns {list[key[0]], list[key[1]], ...}
-    	{V, List[V] for V in *Keys}
+        {V, List[V] for V in *Keys}
 
     omit: (List, Keys) -> -- Returns list without any keys in Keys
-    	Other = U.difference U.keys(List), Keys
-    	{V, List[V] for V in *Other}
+        Other = U.difference U.keys(List), Keys
+        {V, List[V] for V in *Other}
 
     toPairs: (List) ->
         [{K, V} for K, V in pairs List]
@@ -286,16 +286,16 @@ U = {
         table.concat Array, Sep
 
     pop: (Array) ->
-    	table.remove Array
+        table.remove Array
 
     push: (Array, Value) ->
-    	table.insert Array, Value
+        table.insert Array, Value
 
     shift: (Array) ->
-    	table.remove Array, 1
+        table.remove Array, 1
 
     unshift: (Array, Value) ->
-    	table.insert Array, 1, Value
+        table.insert Array, 1, Value
 
     -- Objects
     defaults: (Object, Properties) ->
@@ -375,6 +375,10 @@ U = {
 
     sum: (Array) ->
         U.reduce Array, U.add
+
+    sumBy: (Array, Fn) ->
+        Fn = U.iteratee Fn
+        U.sum U.map Array, Fn
 
     multiply: (x, y) -> x * y
 
