@@ -431,14 +431,13 @@ U = {
 
     -- Helper
     chain: (Value) ->
-        wrapped = {}
-
+        Wrapped = nil
         Wrapped =
             chain: true
-            :wrapped
-            value: ->
-                U.reduce wrapped, ((s, v) ->
-                    v.fn s, unpack v.args
+            wrapped: {}
+            value: =>
+                U.reduce @wrapped, ((s, v) ->
+                    U[v.fn] s, unpack v.args
                 ), Value
 
         setmetatable Wrapped,
@@ -448,8 +447,10 @@ U = {
                 Fn = U[K]
                 assert Fn, 'invalid method in chain: ' .. tostring K
                 (...) ->
-                    table.insert wrapped, fn: Fn, args: {...}
-                    @
+                    T = with U.clone @
+                        .wrapped = U.concat .wrapped, {fn: K, args: {...}}
+
+                    setmetatable T, __index: (getmetatable Wrapped).__index
 
     nowChain: (Value) ->
         Wrap = U Value
@@ -615,6 +616,9 @@ U = {
 
     uniqueId: (prefix = '') ->
         prefix .. U.uniqueCounter.count!
+
+    -- meta
+    mixin: (Plugin) -> U.merge U, Plugin
 
 }
 

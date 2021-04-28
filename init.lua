@@ -734,13 +734,13 @@ U = {
     end
   end,
   chain = function(Value)
-    local wrapped = { }
-    local Wrapped = {
+    local Wrapped = nil
+    Wrapped = {
       chain = true,
-      wrapped = wrapped,
-      value = function()
-        return U.reduce(wrapped, (function(s, v)
-          return v.fn(s, unpack(v.args))
+      wrapped = { },
+      value = function(self)
+        return U.reduce(self.wrapped, (function(s, v)
+          return U[v.fn](s, unpack(v.args))
         end), Value)
       end
     }
@@ -753,13 +753,20 @@ U = {
         local Fn = U[K]
         assert(Fn, 'invalid method in chain: ' .. tostring(K))
         return function(...)
-          table.insert(wrapped, {
-            fn = Fn,
-            args = {
-              ...
-            }
+          local T
+          do
+            local _with_0 = U.clone(self)
+            _with_0.wrapped = U.concat(_with_0.wrapped, {
+              fn = K,
+              args = {
+                ...
+              }
+            })
+            T = _with_0
+          end
+          return setmetatable(T, {
+            __index = (getmetatable(Wrapped)).__index
           })
-          return self
         end
       end
     })
@@ -1105,6 +1112,9 @@ U = {
       prefix = ''
     end
     return prefix .. U.uniqueCounter.count()
+  end,
+  mixin = function(Plugin)
+    return U.merge(U, Plugin)
   end
 }
 U.head = U.first
