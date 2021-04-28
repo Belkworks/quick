@@ -195,6 +195,25 @@ U = {
     fromPairs: (Array) ->
         {P[1], P[2] for P in *Array}
 
+    chunk: (Array, N = 1) ->
+        U.reduce Array, ((S, V) ->
+            if Last = S[#S]
+                if #Last < N
+                    table.insert Last, V
+                    return S
+
+            table.insert S, {V}
+            S
+        ), {}
+
+    concat: (Array, ...) ->
+        Copy = U.clone Array
+        for V in *{...}
+            if U.isArray V
+                table.insert Copy, E for E in *V
+            else table.insert Copy, V
+        Copy
+
     nth: (Array, N) ->
         if N >= 0
             Array[N]
@@ -249,6 +268,14 @@ U = {
     sort: (Array, Fn) -> -- Returns a sorted copy
         Array = U.clone U.values Array
         table.sort Array, Fn
+
+        Array
+
+    sortBy: (Array, Fn) -> -- Returns a sorted copy
+        Fn = U.iteratee Fn
+        Array = U.clone Array
+        Metrics = U.fromPairs U.map U.uniq(Array), (V, ...) -> {V, Fn V, ...}
+        table.sort Array, (A, B) -> Metrics[A] < Metrics[B]
 
         Array
 

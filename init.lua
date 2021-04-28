@@ -374,6 +374,44 @@ U = {
     end
     return _tbl_0
   end,
+  chunk = function(Array, N)
+    if N == nil then
+      N = 1
+    end
+    return U.reduce(Array, (function(S, V)
+      do
+        local Last = S[#S]
+        if Last then
+          if #Last < N then
+            table.insert(Last, V)
+            return S
+          end
+        end
+      end
+      table.insert(S, {
+        V
+      })
+      return S
+    end), { })
+  end,
+  concat = function(Array, ...)
+    local Copy = U.clone(Array)
+    local _list_0 = {
+      ...
+    }
+    for _index_0 = 1, #_list_0 do
+      local V = _list_0[_index_0]
+      if U.isArray(V) then
+        for _index_1 = 1, #V do
+          local E = V[_index_1]
+          table.insert(Copy, E)
+        end
+      else
+        table.insert(Copy, V)
+      end
+    end
+    return Copy
+  end,
   nth = function(Array, N)
     if N >= 0 then
       return Array[N]
@@ -484,6 +522,20 @@ U = {
   sort = function(Array, Fn)
     Array = U.clone(U.values(Array))
     table.sort(Array, Fn)
+    return Array
+  end,
+  sortBy = function(Array, Fn)
+    Fn = U.iteratee(Fn)
+    Array = U.clone(Array)
+    local Metrics = U.fromPairs(U.map(U.uniq(Array), function(V, ...)
+      return {
+        V,
+        Fn(V, ...)
+      }
+    end))
+    table.sort(Array, function(A, B)
+      return Metrics[A] < Metrics[B]
+    end)
     return Array
   end,
   reverse = function(Array)
