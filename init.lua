@@ -107,6 +107,18 @@ U = {
     end
     return Object
   end,
+  set = function(Object, Path, Value)
+    local Ref = Object
+    Path = U.toPath(Path)
+    local _list_0 = U.initial(Path)
+    for _index_0 = 1, #_list_0 do
+      local k = _list_0[_index_0]
+      Ref[k] = Ref[k] or { }
+      Ref = Ref[k]
+    end
+    Ref[_.last(Path)] = Value
+    return Object
+  end,
   result = function(Object, Path, Default)
     local R = U.get(Object, Path)
     if R ~= nil then
@@ -585,7 +597,8 @@ U = {
     return table.remove(Array)
   end,
   push = function(Array, Value)
-    return table.insert(Array, Value)
+    table.insert(Array, Value)
+    return #Array
   end,
   shift = function(Array)
     return table.remove(Array, 1)

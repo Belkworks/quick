@@ -67,6 +67,16 @@ U = {
         
         Object
 
+    set: (Object, Path, Value) ->
+        Ref = Object
+        Path = U.toPath Path
+        for k in *U.initial Path
+            Ref[k] or= {}
+            Ref = Ref[k]
+
+        Ref[_.last Path] = Value
+        Object
+
     result: (Object, Path, Default) ->
         R = U.get Object, Path
         return R if R != nil
@@ -317,6 +327,7 @@ U = {
 
     push: (Array, Value) ->
         table.insert Array, Value
+        #Array
 
     shift: (Array) ->
         table.remove Array, 1
