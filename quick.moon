@@ -129,6 +129,16 @@ U = {
             else A == B
 
     -- Collections
+    keysDeep: (List, Keys = {}, Prefix = {}) ->
+        keys = U.keys List
+        for k in *keys
+            key = U.concat Prefix, k
+            if 'table' == type List[k]
+                U.keysDeep List[k], Keys, key
+            else table.insert Keys, key
+
+        Keys
+
     each: (List, Fn) -> -- Runs Fn on each element
         Fn V, I, List for I, V in pairs List
         List
@@ -346,6 +356,15 @@ U = {
 
     keys: (Object) ->
         [I for I in pairs Object]
+
+    -- Experimental
+    deconstruct: (Template, Object) ->
+        [U.get data, k for k in *U.sort U.keysDeep Template]
+
+    reconstruct: (Object, Template) ->
+        keys = U.sort U.keysDeep Template
+        with result = {}
+            _.set result, keys[i], v for i, v in pairs Object
 
     -- Strings
     plural: (S, N) ->

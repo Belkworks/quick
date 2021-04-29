@@ -233,6 +233,25 @@ U = {
       return A == B
     end
   end,
+  keysDeep = function(List, Keys, Prefix)
+    if Keys == nil then
+      Keys = { }
+    end
+    if Prefix == nil then
+      Prefix = { }
+    end
+    local keys = U.keys(List)
+    for _index_0 = 1, #keys do
+      local k = keys[_index_0]
+      local key = U.concat(Prefix, k)
+      if 'table' == type(List[k]) then
+        U.keysDeep(List[k], Keys, key)
+      else
+        table.insert(Keys, key)
+      end
+    end
+    return Keys
+  end,
   each = function(List, Fn)
     for I, V in pairs(List) do
       Fn(V, I, List)
@@ -628,6 +647,27 @@ U = {
       _len_0 = _len_0 + 1
     end
     return _accum_0
+  end,
+  deconstruct = function(Template, Object)
+    local _accum_0 = { }
+    local _len_0 = 1
+    local _list_0 = U.sort(U.keysDeep(Template))
+    for _index_0 = 1, #_list_0 do
+      local k = _list_0[_index_0]
+      _accum_0[_len_0] = U.get(data, k)
+      _len_0 = _len_0 + 1
+    end
+    return _accum_0
+  end,
+  reconstruct = function(Object, Template)
+    local keys = U.sort(U.keysDeep(Template))
+    do
+      local result = { }
+      for i, v in pairs(Object) do
+        _.set(result, keys[i], v)
+      end
+      return result
+    end
   end,
   plural = function(S, N)
     return S .. (N == 1 and '' or 's')
