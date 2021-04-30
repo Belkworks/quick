@@ -170,7 +170,28 @@ Slower than **pick**
 _.pick({a=1,b=2,c=3}, {'a', 'c'}) -- {b=2}
 ```
 
+**toPairs**: `_.toPairs(list) -> list`  
+Turns `list` into an array of key-value pairs.
+```lua
+_.toPairs({'a', 'b', 'c'}) -- {{1,'a'}, {2,'b'}, {3,'c'}}
+```
+
+**fromPairs**: `_.fromPairs(list) -> list`  
+The opposite of **toPairs**.  
+Returns a list composed of `e[1] -> e[2]` for every element `e` in `list`.
+```lua
+_.fromPairs({{1,'a'}, {2,'b'}, {3,'c'}}) -- {'a', 'b', 'c'}
+```
+
 ### Arrays
+
+**chunk**: `_.chunk(array, size = 1) -> array`  
+Groups elements of `array` into sub arrays of size `size`.  
+The last subarray contains the remainder.
+```lua
+T = _.range(10) -- {1, 2, 3, 4, 5...10}
+_.chunk(T, 3) -- {1,2,3}, {4,5,6}, {7,8,9}, {10}
+```
 
 **shuffle**: `_.shuffle(array) -> array`  
 Returns a shuffled copy of the input `array`.
@@ -216,6 +237,43 @@ _.join({1, 2, 3}, ', ') -- '1, 2, 3'
 Returns an array containing no duplicates.  
 ```lua
 _.uniq({1,2,3,1,2}) -- {1, 2, 3}
+```
+
+**concat**: `_.concat(array, ...elements) -> array`  
+Returns a copy of `array` with each additional argument appended.  
+If an argument is an array, its contents will be appended.
+```lua
+_.concat({1,2,3}, 4, {5, 6}) -- {1, 2, 3, 4, 5, 6}
+```
+
+**initial**: `_.initial(array) -> array`  
+Returns an array of all but the last elements of `array`.
+```lua
+_.initial({1, 2, 3}) -- {1, 2}
+```
+
+**tail**: `_.tail(array) -> array`  
+Returns an array of all but the first element of `array`.
+```lua
+_.tail({1, 2, 3}) -- {2, 3}
+```
+
+**take**: `_.take(array, n = 1) -> array`  
+Returns an array of `n` elements of `array`.
+```lua
+_.take({1, 2, 3}, 2) -- {1, 2}
+```
+
+**takeRight**: `_.takeRight(array, n = 1) -> array`  
+Like **take**, but starts from the right.
+```lua
+_.takeRight({1, 2, 3}, 2) -- {2, 3}
+```
+
+**first**: `_.first(array) -> element?`  
+Returns the first element of `array`
+```lua
+_.first({1, 2, 3}) -- 1
 ```
 
 ### Strings
@@ -303,15 +361,64 @@ Returns the largest element in `array`.
 _.max({1,2,3}) -- 3
 ```
 
+**maxBy**: `_.maxBy(array, fn) -> value`  
+Returns the largest element in `array` attained by `fn`.  
+`fn` is transformed through `_.iteratee`.  
+`fn` receives the parameters `(value, key, list)`  
+```lua
+_.maxBy({'test', 'abc'}, string.len) -- 'test'
+```
+
 **min**: `_.min(array) -> number`  
 Returns the smallest element in `array`.
 ```lua
 _.min({1,2,3}) -- 1
 ```
 
+**minBy**: `_.minBy(array, fn) -> value`  
+Like **maxBy**, but returns the *smallest* value in `array` attained by `fn`.  
+`fn` is transformed through `_.iteratee`.  
+`fn` receives the parameters `(value, key, list)`  
+```lua
+_.minBy({'test', 'abc'}, string.len) -- 'abc'
+```
 
+**clamp**: `_.clamp(num, max) -> number`  
+Returns `max` if `num` is greater than `max`  
+**clamp**: `_.clamp(num, min, max) -> number`  
+Returns `min` if `num` is less than `min`.  
+Returns `max` if `num` is greater than `max`.
+
+```lua
+_.clamp(2, 5, 7) -- 5
+_.clamp(2, 5) -- 2
+_.clamp(6, 5) -- 5
+_.clamp(10, 5, 7) -- 7
+```
 
 ### Utilities
+
+**isEqual**: `_.isEqual(a, b) -> boolean`  
+Returns whether `a` and `b` are deep equals.  
+Useful for comparing tables.
+```lua
+a = {1, 2}
+b = {1, 2}
+a == b -- false
+_.isEqual(a, b) -- true
+```
+
+**clone**: `_.clone(list) -> list`  
+Returns a shallow copy of `list`.
+```lua
+_.clone({1,2,3}) -- {1, 2, 3}
+```
+
+**cloneDeep**: `_.cloneDeep(list) -> list`  
+Returns a deep copy of `list`.
+```lua
+_.clone({1,2,{1,2}}) -- {1, 2, {1,2}}
+```
 
 **chain**: `_.chain(value) -> object`  
 Allows fluent method chaining on a value.  
