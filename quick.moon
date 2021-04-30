@@ -456,8 +456,26 @@ U = {
     max: (Array) ->
         U.reduce Array, U.ary math.max, 2
 
+    maxBy: (Array, Fn) ->
+        Fn = U.iteratee Fn
+        Metrics = U.map Array, Fn
+        Array[U.reduce Metrics, ((S, V, I) ->
+            if V > Metrics[S]
+                I
+            else S
+        ), 1]
+
     min: (Array) ->
         U.reduce Array, U.ary math.min, 2
+
+    minBy: (Array, Fn) ->
+        Fn = U.iteratee Fn
+        Metrics = U.map Array, Fn
+        Array[U.reduce Metrics, ((S, V, I) ->
+            if V < Metrics[S]
+                I
+            else S
+        ), 1]
 
     clamp: (N, Min, Max) ->
         if Max

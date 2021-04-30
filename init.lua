@@ -776,8 +776,30 @@ U = {
   max = function(Array)
     return U.reduce(Array, U.ary(math.max, 2))
   end,
+  maxBy = function(Array, Fn)
+    Fn = U.iteratee(Fn)
+    local Metrics = U.map(Array, Fn)
+    return Array[U.reduce(Metrics, (function(S, V, I)
+      if V > Metrics[S] then
+        return I
+      else
+        return S
+      end
+    end), 1)]
+  end,
   min = function(Array)
     return U.reduce(Array, U.ary(math.min, 2))
+  end,
+  minBy = function(Array, Fn)
+    Fn = U.iteratee(Fn)
+    local Metrics = U.map(Array, Fn)
+    return Array[U.reduce(Metrics, (function(S, V, I)
+      if V < Metrics[S] then
+        return I
+      else
+        return S
+      end
+    end), 1)]
   end,
   clamp = function(N, Min, Max)
     if Max then
