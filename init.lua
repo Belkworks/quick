@@ -480,15 +480,15 @@ U = {
     if N == nil then
       N = 1
     end
-    local _accum_0 = { }
-    local _len_0 = 1
+    local Result = { }
     for I, V in pairs(Array) do
       if I <= N then
-        _accum_0[_len_0] = V
-        _len_0 = _len_0 + 1
+        table.insert(Result, V)
+      else
+        break
       end
     end
-    return _accum_0
+    return Result
   end,
   takeRight = function(Array, N)
     if N == nil then

@@ -250,7 +250,12 @@ U = {
         [V for I, V in pairs Array when I != 1]
 
     take: (Array, N = 1) -> -- Get first N of List 
-        [V for I, V in pairs Array when I <= N]
+        Result = {}
+        for I, V in pairs Array
+            if I <= N
+                table.insert Result, V
+            else break
+        Result
 
     takeRight: (Array, N = 1) ->
         Len = #Array
