@@ -1042,6 +1042,16 @@ U = {
       end
     end
   end,
+  unbind = function(Fn)
+    return function(self, ...)
+      return Fn(...)
+    end
+  end,
+  bind = function(Fn, Self)
+    return function(...)
+      return Fn(Self, ...)
+    end
+  end,
   debounce = function(state)
     if state == nil then
       state = false

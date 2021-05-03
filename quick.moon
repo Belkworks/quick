@@ -592,6 +592,12 @@ U = {
         Fns = {...}
         (...) -> Fn ... for Fn in *Fns
 
+    unbind: (Fn) ->
+        (...) => Fn ...
+
+    bind: (Fn, Self) ->
+        (...) -> Fn Self, ...
+
     -- debounce(state = false) -> (set = true) -> bool
     debounce: (state = false) ->
         (set = true) ->
