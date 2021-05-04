@@ -423,16 +423,19 @@ _.clone({1,2,{1,2}}) -- {1, 2, {1,2}}
 **chain**: `_.chain(value) -> object`  
 Allows fluent method chaining on a value.  
 Each subsequent call is wrapped in a new `chain`.  
-Use the `.value()` function to get the value from a chain.
+Use the `:value()` method to execute the chain and get the result.
 ```lua
 list = _.chain({1, 2, 3})
+-- equivalent to
+list = _({1,2,3}).chain()
+
 reversed = list.reverse()
 doubled = reversed.map(function(v) return v*2 end)
-doubledReversed = doubled.value() -- {6, 4, 2}
+doubledReversed = doubled:value() -- {6, 4, 2}
 
 -- you don't need to assign each step to a variable
 double = function(v) return v*2 end
-doubledReversed = _.chain({1, 2, 3}).reverse().map(double).value() -- {6, 4, 2}
+doubledReversed = _.chain({1, 2, 3}).reverse().map(double):value() -- {6, 4, 2}
 ```
 
 **iteratee**: `_.iteratee(any) -> function`  
