@@ -116,7 +116,7 @@ U = {
       Ref[k] = Ref[k] or { }
       Ref = Ref[k]
     end
-    Ref[_.last(Path)] = Value
+    Ref[U.last(Path)] = Value
     return Object
   end,
   result = function(Object, Path, Default)
@@ -654,7 +654,7 @@ U = {
     local _list_0 = U.sort(U.keysDeep(Template))
     for _index_0 = 1, #_list_0 do
       local k = _list_0[_index_0]
-      _accum_0[_len_0] = U.get(data, k)
+      _accum_0[_len_0] = U.get(Object, k)
       _len_0 = _len_0 + 1
     end
     return _accum_0
@@ -664,7 +664,7 @@ U = {
     do
       local result = { }
       for i, v in pairs(Object) do
-        _.set(result, keys[i], v)
+        U.set(result, keys[i], v)
       end
       return result
     end
@@ -967,7 +967,7 @@ U = {
     return function(...)
       count = count + 1
       if count > N then
-        return FN(...)
+        return Fn(...)
       end
     end
   end,
@@ -1088,6 +1088,26 @@ U = {
       return not deb(not set)
     end
   end,
+  toggle = function(state)
+    if state == nil then
+      state = false
+    end
+    return {
+      state = function()
+        return state
+      end,
+      toggle = function()
+        state = not state
+        return state
+      end,
+      reset = function(to)
+        if to == nil then
+          to = false
+        end
+        state = to
+      end
+    }
+  end,
   lock = function(state)
     if state == nil then
       state = false
@@ -1190,7 +1210,7 @@ U = {
     if state == nil then
       state = 0
     end
-    return counter(state).count
+    return U.counter(state).count
   end,
   uniqueId = function(prefix)
     if prefix == nil then

@@ -74,7 +74,7 @@ U = {
             Ref[k] or= {}
             Ref = Ref[k]
 
-        Ref[_.last Path] = Value
+        Ref[U.last Path] = Value
         Object
 
     result: (Object, Path, Default) ->
@@ -364,12 +364,12 @@ U = {
 
     -- Experimental
     deconstruct: (Template, Object) ->
-        [U.get data, k for k in *U.sort U.keysDeep Template]
+        [U.get Object, k for k in *U.sort U.keysDeep Template]
 
     reconstruct: (Object, Template) ->
         keys = U.sort U.keysDeep Template
         with result = {}
-            _.set result, keys[i], v for i, v in pairs Object
+            U.set result, keys[i], v for i, v in pairs Object
 
     -- Strings
     plural: (S, N) ->
@@ -557,7 +557,7 @@ U = {
         (...) ->
             count += 1
             if count > N
-                FN ...
+                Fn ...
 
     before: (N = 1, Fn) ->
         Result = {}
@@ -620,6 +620,15 @@ U = {
         (set) -> not deb not set
 
     -- data structures
+    toggle: (state = false) ->
+        {
+            state: -> state
+            toggle: ->
+                state = not state
+                state
+            reset: (to = false) -> state = to
+        }
+
     lock: (state = false) ->
         {
             locked: -> state == true
@@ -671,7 +680,7 @@ U = {
 
     -- ids
     nonce: (state = 0) ->
-        counter(state).count
+        U.counter(state).count
 
     uniqueId: (prefix = '') ->
         prefix .. U.uniqueCounter.count!
