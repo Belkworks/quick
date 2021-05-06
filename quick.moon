@@ -484,14 +484,15 @@ U = {
 
     -- Helper
     chain: (Value) ->
-        Wrapped = nil
         Wrapped =
             chain: true
             wrapped: {}
+            target: Value
+            plant: (@target) =>
             value: =>
                 U.reduce @wrapped, ((s, v) ->
                     U[v.fn] s, unpack v.args
-                ), Value
+                ), @target
 
         setmetatable Wrapped,
             __index: (K) =>

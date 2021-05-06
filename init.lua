@@ -809,14 +809,17 @@ U = {
     end
   end,
   chain = function(Value)
-    local Wrapped = nil
-    Wrapped = {
+    local Wrapped = {
       chain = true,
       wrapped = { },
+      target = Value,
+      plant = function(self, target)
+        self.target = target
+      end,
       value = function(self)
         return U.reduce(self.wrapped, (function(s, v)
           return U[v.fn](s, unpack(v.args))
-        end), Value)
+        end), self.target)
       end
     }
     return setmetatable(Wrapped, {
