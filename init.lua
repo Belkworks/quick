@@ -1025,6 +1025,32 @@ U = {
   once = function(Fn)
     return U.before(1, Fn)
   end,
+  over = function(Fns)
+    return function(...)
+      local _accum_0 = { }
+      local _len_0 = 1
+      for _index_0 = 1, #Fns do
+        local Fn = Fns[_index_0]
+        _accum_0[_len_0] = Fn(...)
+        _len_0 = _len_0 + 1
+      end
+      return _accum_0
+    end
+  end,
+  overEvery = function(Fns)
+    return function(...)
+      return U.every(Fns, function(Fn)
+        return Fn(...)
+      end)
+    end
+  end,
+  overSome = function(Fns)
+    return function(...)
+      return U.some(Fns, function(Fn)
+        return Fn(...)
+      end)
+    end
+  end,
   overArgs = function(Fn, Transforms)
     return function(...)
       return Fn(unpack(U.map({

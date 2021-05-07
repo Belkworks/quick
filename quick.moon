@@ -586,6 +586,15 @@ U = {
 
     once: (Fn) -> U.before 1, Fn
 
+    over: (Fns) ->
+        (...) -> [Fn ... for Fn in *Fns]
+
+    overEvery: (Fns) ->
+        (...) -> U.every Fns, (Fn) -> Fn ...
+
+    overSome: (Fns) ->
+        (...) -> U.some Fns, (Fn) -> Fn ...
+
     overArgs: (Fn, Transforms) -> -- Fn a, b -> Fn Transforms[1]a, Transforms[2]b
         (...) -> Fn unpack U.map {...}, (V, I) -> Transforms[I] V
 
