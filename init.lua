@@ -1039,15 +1039,21 @@ U = {
   end,
   overEvery = function(Fns)
     return function(...)
+      local Args = {
+        ...
+      }
       return U.every(Fns, function(Fn)
-        return Fn(...)
+        return Fn(unpack(Args))
       end)
     end
   end,
   overSome = function(Fns)
     return function(...)
+      local Args = {
+        ...
+      }
       return U.some(Fns, function(Fn)
-        return Fn(...)
+        return Fn(unpack(Args))
       end)
     end
   end,

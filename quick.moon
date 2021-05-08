@@ -590,10 +590,14 @@ U = {
         (...) -> [Fn ... for Fn in *Fns]
 
     overEvery: (Fns) ->
-        (...) -> U.every Fns, (Fn) -> Fn ...
+        (...) ->
+            Args = {...}
+            U.every Fns, (Fn) -> Fn unpack Args
 
     overSome: (Fns) ->
-        (...) -> U.some Fns, (Fn) -> Fn ...
+        (...) ->
+            Args = {...}
+            U.some Fns, (Fn) -> Fn unpack Args
 
     overArgs: (Fn, Transforms) -> -- Fn a, b -> Fn Transforms[1]a, Transforms[2]b
         (...) -> Fn unpack U.map {...}, (V, I) -> Transforms[I] V
