@@ -490,6 +490,20 @@ U = {
     end
     return Result
   end,
+  drop = function(Array, N)
+    if N == nil then
+      N = 1
+    end
+    local _accum_0 = { }
+    local _len_0 = 1
+    for I, V in pairs(Array) do
+      if I > N then
+        _accum_0[_len_0] = V
+        _len_0 = _len_0 + 1
+      end
+    end
+    return _accum_0
+  end,
   takeRight = function(Array, N)
     if N == nil then
       N = 1
@@ -586,6 +600,13 @@ U = {
     end
     return U.take(U.shuffle(Array), N)
   end,
+  takeSample = function(Array)
+    local Len = #Array
+    if Len == 0 then
+      return 
+    end
+    return table.remove(Array, math.random(1, Len))
+  end,
   size = function(Array)
     return #U.values(Array)
   end,
@@ -624,6 +645,30 @@ U = {
   end,
   unshift = function(Array, Value)
     return table.insert(Array, 1, Value)
+  end,
+  without = function(Array, ...)
+    return U.difference(Array, {
+      ...
+    })
+  end,
+  pull = function(Array, ...)
+    local ToRemove = U.uniq({
+      ...
+    })
+    local I = 1
+    while I <= #Array do
+      for _index_0 = 1, #ToRemove do
+        local T = ToRemove[_index_0]
+        if Array[I] == T then
+          table.remove(Array, I)
+          I = I - 1
+        end
+      end
+      I = I + 1
+    end
+  end,
+  remove = function(Array, Fn)
+    return U.pull(Array, unpack(U.filter(Array, Fn)))
   end,
   defaults = function(Object, Properties)
     for I, V in pairs(Properties) do

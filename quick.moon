@@ -257,6 +257,9 @@ U = {
             else break
         Result
 
+    drop: (Array, N = 1) ->
+        [V for I, V in pairs Array when I > N]
+
     takeRight: (Array, N = 1) ->
         Len = #Array
         [V for I, V in pairs Array when I > Len - N]
@@ -319,7 +322,13 @@ U = {
     sampleSize: (Array, N = 1) -> -- Returns random sample
         U.take U.shuffle(Array), N
 
-    size: (Array) -> #U.values Array -- Returns count of array/object
+    takeSample: (Array) ->
+        Len = #Array
+        return if Len == 0
+        table.remove Array, math.random 1, Len
+
+    size: (Array) -> -- Returns count of array/object
+        #U.values Array 
 
     partition: (Array, Fn) -> -- Returns list of passing values and list of failing values
         Fn = U.iteratee Fn
@@ -349,6 +358,22 @@ U = {
 
     unshift: (Array, Value) ->
         table.insert Array, 1, Value
+
+    without: (Array, ...) ->
+        U.difference Array, {...}
+
+    pull: (Array, ...) ->
+        ToRemove = U.uniq {...}
+        I = 1
+        while I <= #Array
+            for T in *ToRemove
+                if Array[I] == T
+                    table.remove Array, I
+                    I -= 1
+            I += 1
+
+    remove: (Array, Fn) ->
+        U.pull Array, unpack U.filter Array, Fn
 
     -- Objects
     defaults: (Object, Properties) ->
