@@ -60,7 +60,11 @@ U = {
         Path = U.toPath Path
         for v in *Path
             if type(Object) == 'table'
-                Object = Object[v]
+                val = Object[v]
+                if val == nil
+                    Object = Default
+                    break
+                else Object = val
             else
                 Object = Default
                 break

@@ -99,7 +99,13 @@ U = {
     for _index_0 = 1, #Path do
       local v = Path[_index_0]
       if type(Object) == 'table' then
-        Object = Object[v]
+        local val = Object[v]
+        if val == nil then
+          Object = Default
+          break
+        else
+          Object = val
+        end
       else
         Object = Default
         break
