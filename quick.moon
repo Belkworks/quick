@@ -27,12 +27,15 @@ U = {
             S and R
 
     isArray: (List) ->
-        return false unless 'table' == type List
+        return false if (type List) != 'table' 
         #List == #[i for i in pairs List]
 
     isObject: (List) ->
-        return false unless 'table' == type List
+        return false if (type List) != 'table' 
         not U.isArray List
+
+    isNil: (Input) ->
+        Input == nil
 
     isMatch: (Object, Props, Explored = {}) -> -- Returns true if Object matches Props
         for I, V in pairs Props -- TODO: cleanup
@@ -332,7 +335,7 @@ U = {
         table.remove Array, math.random 1, Len
 
     size: (Array) -> -- Returns count of array/object
-        #U.values Array 
+        #[1 for k in pairs Array] 
 
     partition: (Array, Fn) -> -- Returns list of passing values and list of failing values
         Fn = U.iteratee Fn

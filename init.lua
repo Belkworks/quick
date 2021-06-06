@@ -33,7 +33,7 @@ U = {
     end
   end,
   isArray = function(List)
-    if not ('table' == type(List)) then
+    if (type(List)) ~= 'table' then
       return false
     end
     return #List == #(function()
@@ -47,10 +47,13 @@ U = {
     end)()
   end,
   isObject = function(List)
-    if not ('table' == type(List)) then
+    if (type(List)) ~= 'table' then
       return false
     end
     return not U.isArray(List)
+  end,
+  isNil = function(Input)
+    return Input == nil
   end,
   isMatch = function(Object, Props, Explored)
     if Explored == nil then
@@ -614,7 +617,15 @@ U = {
     return table.remove(Array, math.random(1, Len))
   end,
   size = function(Array)
-    return #U.values(Array)
+    return #(function()
+      local _accum_0 = { }
+      local _len_0 = 1
+      for k in pairs(Array) do
+        _accum_0[_len_0] = 1
+        _len_0 = _len_0 + 1
+      end
+      return _accum_0
+    end)()
   end,
   partition = function(Array, Fn)
     Fn = U.iteratee(Fn)
