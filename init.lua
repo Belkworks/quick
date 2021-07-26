@@ -394,6 +394,18 @@ U = {
     end
     return _tbl_0
   end,
+  countBy = function(List, Fn)
+    Fn = U.iteratee(Fn)
+    return U.reduce(List, (function(S, V, I)
+      local K = Fn(V, I, List)
+      if S[K] then
+        S[K] = S[K] + 1
+      else
+        S[K] = 1
+      end
+      return S
+    end), { })
+  end,
   toPairs = function(List)
     local _accum_0 = { }
     local _len_0 = 1
@@ -1282,7 +1294,7 @@ U = {
       end
     })
   end,
-  defaultdict = function(Getter, State)
+  memoize = function(Getter, State)
     if State == nil then
       State = { }
     end
@@ -1322,6 +1334,7 @@ U = {
 U.head = U.first
 U.car = U.first
 U.cdr = U.tail
+U.defaultdict = U.memoize
 U.uniqueCounter = U.counter()
 if game then
   do

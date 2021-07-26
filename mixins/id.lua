@@ -68,7 +68,7 @@ return function(U)
           U.__empty(doc)
           do
             local _with_0 = merge(doc, props)
-            _with_0.id = id
+            _with_0[U.__id()] = id
             return _with_0
           end
         end
