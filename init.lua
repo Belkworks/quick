@@ -707,6 +707,30 @@ U = {
     end
     return Object
   end,
+  defaultsDeep = function(Object, Properties, Explored)
+    if Explored == nil then
+      Explored = { }
+    end
+    for I, V in pairs(Properties) do
+      local T = Object[I]
+      if T ~= nil then
+        if (type(V)) == 'table' and (type(T)) == 'table' then
+          do
+            local E = Explored[T]
+            if E then
+              return E
+            end
+          end
+          Explored[T] = '** circular **'
+          U.defaultsDeep(T, V, Explored)
+          Explored[T] = T
+        end
+      else
+        Object[I] = U.cloneDeep(V)
+      end
+    end
+    return Object
+  end,
   merge = function(Object, Properties)
     for I, V in pairs(Properties) do
       Object[I] = V
