@@ -215,6 +215,16 @@ U = {
         Other = U.difference U.keys(List), Keys
         {V, List[V] for V in *Other}
 
+    countBy: (List, Fn) ->
+        Fn = U.iteratee Fn
+        U.reduce List, ((S, V, I) ->
+            K = Fn V, I, List
+            S[K] = if S[K]
+                S[K] + 1
+            else 1
+            S
+        ), {}
+
     toPairs: (List) ->
         [{K, V} for K, V in pairs List]
 
@@ -385,6 +395,19 @@ U = {
     -- Objects
     defaults: (Object, Properties) ->
         Object[I] = V for I, V in pairs Properties when Object[I] == nil
+        Object
+
+    defaultsDeep: (Object, Properties, Explored = {}) ->
+        for I, V in pairs Properties
+            T = Object[I]
+            if T != nil
+                if (type V) == 'table' and (type T) == 'table'
+                    if E = Explored[T]
+                        return E
+                    Explored[T] = '** circular **'
+                    U.defaultsDeep T, V, Explored
+                    Explored[T] = T
+            else Object[I] = U.cloneDeep V
         Object
 
     merge: (Object, Properties) ->
@@ -709,7 +732,7 @@ U = {
             next: -> table.remove state, 1
             peek: -> state[1]
 
-    defaultdict: (Getter, State = {}) ->
+    memoize: (Getter, State = {}) ->
         isFunction = 'function' == type Getter
 
         setmetatable State,
@@ -740,6 +763,7 @@ U = {
 U.head = U.first
 U.car = U.first
 U.cdr = U.tail
+U.defaultdict = U.memoize
 
 -- Setup
 U.uniqueCounter = U.counter!
