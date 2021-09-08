@@ -333,6 +333,12 @@ U = {
         
         Result
 
+    fill: (Array, Length, Value = 0) ->
+        while #Array < Length
+            table.insert Array, Value
+
+        Array
+
     sample: (Array) -> -- returns a random element from Array
         Array[math.random 1, #Array]
 
@@ -481,6 +487,9 @@ U = {
     -- Math
     rr: (val, min, max, change = 0) -> -- round robin
         min + (val + change - min)%(max + 1 - min)
+
+    fromHex: (val) ->
+        tonumber val, 16
 
     isEven: (x) ->
         x%2 == 0
@@ -786,6 +795,10 @@ if game
                 U.merge object, properties
 
             object
+
+        .hexColor = (str) ->
+            values = { str\match '#?(%x%x)(%x%x)(%x%x)' }
+            Color3.fromRGB unpack U.chain(values).fill(3).map(U.fromHex)\value!
 
 setmetatable U, __call: (Value) =>
     with Wrap = {}

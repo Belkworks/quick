@@ -612,6 +612,15 @@ U = {
     end
     return Result
   end,
+  fill = function(Array, Length, Value)
+    if Value == nil then
+      Value = 0
+    end
+    while #Array < Length do
+      table.insert(Array, Value)
+    end
+    return Array
+  end,
   sample = function(Array)
     return Array[math.random(1, #Array)]
   end,
@@ -839,6 +848,9 @@ U = {
       change = 0
     end
     return min + (val + change - min) % (max + 1 - min)
+  end,
+  fromHex = function(val)
+    return tonumber(val, 16)
   end,
   isEven = function(x)
     return x % 2 == 0
@@ -1384,6 +1396,12 @@ if game then
         U.merge(object, properties)
       end
       return object
+    end
+    U.hexColor = function(str)
+      local values = {
+        str:match('#?(%x%x)(%x%x)(%x%x)')
+      }
+      return Color3.fromRGB(unpack(U.chain(values).fill(3).map(U.fromHex):value()))
     end
   end
 end
