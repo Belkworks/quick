@@ -704,6 +704,7 @@ U = {
       end
       I = I + 1
     end
+    return Array
   end,
   remove = function(Array, Fn)
     return U.pull(Array, unpack(U.filter(Array, Fn)))

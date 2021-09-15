@@ -395,6 +395,8 @@ U = {
                     I -= 1
             I += 1
 
+        Array
+
     remove: (Array, Fn) ->
         U.pull Array, unpack U.filter Array, Fn
 
