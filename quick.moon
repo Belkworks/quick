@@ -62,7 +62,8 @@ U = {
     get: (Object, Path, Default) ->
         Path = U.toPath Path
         for v in *Path
-            if type(Object) == 'table'
+            t = type Object
+            if t == 'table' or t == 'userdata'
                 val = Object[v]
                 if val == nil
                     Object = Default

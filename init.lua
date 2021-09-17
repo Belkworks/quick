@@ -101,7 +101,8 @@ U = {
     Path = U.toPath(Path)
     for _index_0 = 1, #Path do
       local v = Path[_index_0]
-      if type(Object) == 'table' then
+      local t = type(Object)
+      if t == 'table' or t == 'userdata' then
         local val = Object[v]
         if val == nil then
           Object = Default
