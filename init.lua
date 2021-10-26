@@ -32,6 +32,9 @@ U = {
       return S and R
     end
   end,
+  call = function(Fn, ...)
+    return Fn(...)
+  end,
   isArray = function(List)
     if (type(List)) ~= 'table' then
       return false
@@ -1373,6 +1376,7 @@ U.head = U.first
 U.car = U.first
 U.cdr = U.tail
 U.defaultdict = U.memoize
+U.instantly = U.call
 U.uniqueCounter = U.counter()
 if game then
   do

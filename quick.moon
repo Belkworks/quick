@@ -26,6 +26,8 @@ U = {
             S, R = pcall Fn, ...
             S and R
 
+    call: (Fn, ...) -> Fn ...
+
     isArray: (List) ->
         return false if (type List) != 'table' 
         #List == #[i for i in pairs List]
@@ -776,6 +778,7 @@ U.head = U.first
 U.car = U.first
 U.cdr = U.tail
 U.defaultdict = U.memoize
+U.instantly = U.call -- hi wally
 
 -- Setup
 U.uniqueCounter = U.counter!
