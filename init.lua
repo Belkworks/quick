@@ -682,6 +682,10 @@ U = {
     table.insert(Array, Value)
     return #Array
   end,
+  insert = function(Array, Value)
+    table.insert(Array, Value)
+    return Value
+  end,
   shift = function(Array)
     return table.remove(Array, 1)
   end,

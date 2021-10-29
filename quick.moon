@@ -379,6 +379,10 @@ U = {
         table.insert Array, Value
         #Array
 
+    insert: (Array, Value) ->
+        table.insert Array, Value
+        Value
+
     shift: (Array) ->
         table.remove Array, 1
 
