@@ -149,6 +149,9 @@ U = {
 
         Keys
 
+    size: (List) -> -- Returns size of list
+        #[1 for k in pairs List] 
+
     each: (List, Fn) -> -- Runs Fn on each element
         Fn V, I, List for I, V in pairs List
         List
@@ -234,6 +237,8 @@ U = {
     -- Arrays
     fromPairs: (Array) ->
         {P[1], P[2] for P in *Array}
+
+    count: (Array) -> #K
 
     chunk: (Array, N = 1) ->
         U.reduce Array, ((S, V) ->
@@ -352,9 +357,6 @@ U = {
         Len = #Array
         return if Len == 0
         table.remove Array, math.random 1, Len
-
-    size: (Array) -> -- Returns count of array/object
-        #[1 for k in pairs Array] 
 
     partition: (Array, Fn) -> -- Returns list of passing values and list of failing values
         Fn = U.iteratee Fn

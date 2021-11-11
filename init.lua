@@ -265,6 +265,17 @@ U = {
     end
     return Keys
   end,
+  size = function(List)
+    return #(function()
+      local _accum_0 = { }
+      local _len_0 = 1
+      for k in pairs(List) do
+        _accum_0[_len_0] = 1
+        _len_0 = _len_0 + 1
+      end
+      return _accum_0
+    end)()
+  end,
   each = function(List, Fn)
     for I, V in pairs(List) do
       Fn(V, I, List)
@@ -429,6 +440,9 @@ U = {
       _tbl_0[P[1]] = P[2]
     end
     return _tbl_0
+  end,
+  count = function(Array)
+    return #K
   end,
   chunk = function(Array, N)
     if N == nil then
@@ -640,17 +654,6 @@ U = {
       return 
     end
     return table.remove(Array, math.random(1, Len))
-  end,
-  size = function(Array)
-    return #(function()
-      local _accum_0 = { }
-      local _len_0 = 1
-      for k in pairs(Array) do
-        _accum_0[_len_0] = 1
-        _len_0 = _len_0 + 1
-      end
-      return _accum_0
-    end)()
   end,
   partition = function(Array, Fn)
     Fn = U.iteratee(Fn)
