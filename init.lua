@@ -442,7 +442,7 @@ U = {
     return _tbl_0
   end,
   count = function(Array)
-    return #K
+    return #Array
   end,
   chunk = function(Array, N)
     if N == nil then

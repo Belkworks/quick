@@ -238,7 +238,7 @@ U = {
     fromPairs: (Array) ->
         {P[1], P[2] for P in *Array}
 
-    count: (Array) -> #K
+    count: (Array) -> #Array
 
     chunk: (Array, N = 1) ->
         U.reduce Array, ((S, V) ->
