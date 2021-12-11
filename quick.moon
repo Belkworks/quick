@@ -687,6 +687,9 @@ U = {
     bind: (Fn, Self) ->
         (...) -> Fn Self, ...
 
+    namecall: (Self, Method) ->
+        (...) -> Self[Method] ...
+
     -- debounce(state = false) -> (set = true) -> bool
     debounce: (state = false) ->
         (set = true) ->

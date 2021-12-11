@@ -1209,6 +1209,11 @@ U = {
       return Fn(Self, ...)
     end
   end,
+  namecall = function(Self, Method)
+    return function(...)
+      return Self[Method](...)
+    end
+  end,
   debounce = function(state)
     if state == nil then
       state = false
