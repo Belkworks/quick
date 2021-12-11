@@ -1211,7 +1211,7 @@ U = {
   end,
   namecall = function(Self, Method)
     return function(...)
-      return Self[Method](...)
+      return Self[Method](Self, ...)
     end
   end,
   debounce = function(state)
