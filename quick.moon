@@ -538,7 +538,10 @@ U = {
             if V > Metrics[S]
                 I
             else S
-        ), 1]
+        )]
+
+    maxKeyBy: (Collection, Fn) ->
+        U.maxBy (U.keys Collection), Fn
 
     min: (Array) ->
         U.reduce Array, U.ary math.min, 2
@@ -550,7 +553,10 @@ U = {
             if V < Metrics[S]
                 I
             else S
-        ), 1]
+        )]
+
+    minKeyBy: (Collection, Fn) ->
+        U.minBy (U.keys Collection), Fn
 
     clamp: (N, Min, Max) ->
         if Max

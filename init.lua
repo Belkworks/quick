@@ -907,7 +907,10 @@ U = {
       else
         return S
       end
-    end), 1)]
+    end))]
+  end,
+  maxKeyBy = function(Collection, Fn)
+    return U.maxBy((U.keys(Collection)), Fn)
   end,
   min = function(Array)
     return U.reduce(Array, U.ary(math.min, 2))
@@ -921,7 +924,10 @@ U = {
       else
         return S
       end
-    end), 1)]
+    end))]
+  end,
+  minKeyBy = function(Collection, Fn)
+    return U.minBy((U.keys(Collection)), Fn)
   end,
   clamp = function(N, Min, Max)
     if Max then

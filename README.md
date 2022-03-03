@@ -183,6 +183,38 @@ Returns a list composed of `e[1] -> e[2]` for every element `e` in `list`.
 _.fromPairs({{1,'a'}, {2,'b'}, {3,'c'}}) -- {'a', 'b', 'c'}
 ```
 
+**maxBy**: `_.maxBy(list, fn) -> value`  
+Returns the largest element in `list` attained by `fn`.  
+`fn` is transformed through `_.iteratee`.  
+`fn` receives the parameters `(value, key, list)`  
+```lua
+_.maxBy({'test', 'abc'}, string.len) -- 'test'
+```
+
+**maxKeyBy**: `_.maxKeyBy(list, fn) -> value`  
+Returns the largest key in `list` attained by `fn`.  
+`fn` is transformed through `_.iteratee`.  
+`fn` receives the parameters `(key, index, list)`  
+```lua
+_.maxKeyBy({a='test', bb='test'}, string.len) -- 'bb'
+```
+
+**minBy**: `_.minBy(list, fn) -> value`  
+Like **maxBy**, but returns the *smallest* value in `list` attained by `fn`.  
+`fn` is transformed through `_.iteratee`.  
+`fn` receives the parameters `(value, key, list)`  
+```lua
+_.minBy({'test', 'abc'}, string.len) -- 'abc'
+```
+
+**minKeyBy**: `_.minKeyBy(list, fn) -> value`  
+Like **maxKeyBy**, but returns the *smallest* key in `list` attained by `fn`.  
+`fn` is transformed through `_.iteratee`.  
+`fn` receives the parameters `(key, index, list)`  
+```lua
+_.minKeyBy({a='test', bb='test'}, string.len) -- 'a'
+```
+
 ### Arrays
 
 **chunk**: `_.chunk(array, size = 1) -> array`  
@@ -361,26 +393,10 @@ Returns the largest element in `array`.
 _.max({1,2,3}) -- 3
 ```
 
-**maxBy**: `_.maxBy(array, fn) -> value`  
-Returns the largest element in `array` attained by `fn`.  
-`fn` is transformed through `_.iteratee`.  
-`fn` receives the parameters `(value, key, list)`  
-```lua
-_.maxBy({'test', 'abc'}, string.len) -- 'test'
-```
-
 **min**: `_.min(array) -> number`  
 Returns the smallest element in `array`.
 ```lua
 _.min({1,2,3}) -- 1
-```
-
-**minBy**: `_.minBy(array, fn) -> value`  
-Like **maxBy**, but returns the *smallest* value in `array` attained by `fn`.  
-`fn` is transformed through `_.iteratee`.  
-`fn` receives the parameters `(value, key, list)`  
-```lua
-_.minBy({'test', 'abc'}, string.len) -- 'abc'
 ```
 
 **clamp**: `_.clamp(num, max) -> number`  
